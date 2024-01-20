@@ -1,0 +1,11 @@
+mysql:
+  username: root
+  password: 1234
+  host: localhost
+  port: 3306
+  dbname: user
+redis:
+  host: localhost
+  port: 6379
+  password:
+  db: 0
