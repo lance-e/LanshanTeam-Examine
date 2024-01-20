@@ -1,0 +1,38 @@
+{"level":"panic","ts":"2024-01-20T17:03:18.563+0800","msg":"couldn't read in config file"}
+{"level":"panic","ts":"2024-01-20T17:06:37.318+0800","msg":"couldn't read in config file"}
+{"level":"panic","ts":"2024-01-20T17:08:16.146+0800","msg":"couldn't read in config file"}
+{"level":"panic","ts":"2024-01-20T17:09:09.844+0800","msg":"couldn't read in config file"}
+{"level":"panic","ts":"2024-01-20T17:24:26.764+0800","msg":"couldn't read in config file"}
+{"level":"panic","ts":"2024-01-20T17:25:12.347+0800","msg":"couldn't read in config file"}
+{"level":"debug","ts":"2024-01-20T17:27:09.068+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:25:23.611+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:26:28.104+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:28:06.589+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:29:55.105+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:30:07.829+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:31:24.821+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:33:07.287+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:35:49.322+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:37:07.979+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:43:56.986+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:44:15.007+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:48:03.126+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:48:38.227+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:49:56.181+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T18:52:46.344+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+2024-01-20T18:56:05.452+0800	debug	:@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local
+2024-01-20T19:00:30.143+0800	debug	:@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local
+2024-01-20T19:01:03.431+0800	debug	:@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local
+2024-01-20T19:53:05.577+0800	panic	read the mysql config file failed
+{"level":"panic","ts":"2024-01-20T19:54:25.763+0800","msg":"read the mysql config file failed"}
+{"level":"debug","ts":"2024-01-20T19:55:27.508+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T19:55:43.536+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T19:56:07.037+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T19:56:18.394+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T19:56:28.120+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T19:57:14.434+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T19:57:45.541+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"panic","ts":"2024-01-20T19:58:06.019+0800","msg":"result must be a pointer"}
+{"level":"debug","ts":"2024-01-20T19:58:32.541+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T20:01:04.993+0800","msg":":@tcp(:)/?charset=utf8mb4&parseTime=True&loc=Local"}
+{"level":"debug","ts":"2024-01-20T20:20:19.205+0800","msg":"root:1234@tcp(localhost:3306)/user?charset=utf8mb4&parseTime=True&loc=Local"}
