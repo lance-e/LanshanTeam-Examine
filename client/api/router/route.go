@@ -1,16 +1,22 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"LanshanTeam-Examine/client/api/middleware"
+	"LanshanTeam-Examine/client/handle"
+	"github.com/gin-gonic/gin"
+)
 
 func NewRouter() *gin.Engine {
 	engine := gin.Default()
+	engine.Use(middleware.Cors()) //解决跨域问题
 
+	engine.GET("/state", handle.Get)
 	user := engine.Group("/user")
 	{
-		user.POST("/register/byPassword") //未实名
-		user.POST("/register/byPhoneNumber")
-		user.POST("/register/byEmail")
-		user.POST("/register/byGitHub") //OAuth2.0注册
+		register := user.Group("/register")
+		{
+			register.POST("/byPassword", handle.RegisterByPassword)
+		}
 
 	}
 

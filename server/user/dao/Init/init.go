@@ -5,7 +5,6 @@ import (
 	"LanshanTeam-Examine/server/user/dao/db"
 	"LanshanTeam-Examine/server/user/pkg/utils"
 	"context"
-	"fmt"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -66,7 +65,6 @@ func InitMysql() {
 }
 func InitRedis() {
 	readConfig()
-	fmt.Println(info)
 	cathe.RedisClient = redis.NewClient(&redis.Options{
 		Addr:     info.CatheInfo.Host + ":" + info.CatheInfo.Port,
 		Password: info.CatheInfo.Password,
