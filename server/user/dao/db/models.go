@@ -1,20 +1,21 @@
 package db
 
-import "LanshanTeam-Examine/server/user/pkg/utils"
+import (
+	"LanshanTeam-Examine/server/user/pkg/utils"
+)
 
 type UserInfo struct {
-	//UUID string 	`gorm:"uuid" json:"uuid"`
 	Username    string `gorm:"username" json:"username"`
 	Password    string `gorm:"password" json:"password"`
 	PhoneNumber int    `gorm:"phone_number" json:"phone_number"`
 	Email       string `gorm:"email" json:"email"`
-	//GitHubName  string `gorm:"git_hub_name" json:"git_hub_name"`
 }
 
 func (u UserInfo) TableName() string {
 	return "user_info"
 }
 
+// Get 数据库操作：进行查询，what是字段名，value是值，user是查询到的地方
 func (u *UserInfo) Get(what, value string, user *UserInfo) error {
 	err := DB.Model(u).Where(what+"= ? ", value).First(&user).Error
 	if err != nil {

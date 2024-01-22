@@ -1,22 +1,29 @@
 package utils
 
 import (
-	"golang.org/x/crypto/bcrypt"
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
+	"log"
 )
 
 var salt = "LanShanTeam examine :D"
 
-func Encrypt(password string) (string, error) {
-	password = password + salt
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		UserLogger.Error("ERROR: " + err.Error())
-		return "", err
-	}
-	return string(hashedPassword), nil
+func Encrypt(password string) string {
+
+	pw, _ := hex.DecodeString(password + salt)
+	hash := sha256.Sum256(pw)
+	return hex.EncodeToString(hash[:])
 }
 
 func Compare(hashedPassword string, enteredPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(enteredPassword))
+	enteredPassword = enteredPassword + salt
 
+	hashed := Encrypt(enteredPassword)
+	log.Println(enteredPassword)
+	log.Println(hashedPassword)
+	if hashed != hashedPassword {
+		return errors.New("hashedPassword is not the hash of the given password ")
+	}
+	return nil
 }

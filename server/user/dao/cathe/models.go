@@ -14,8 +14,9 @@ type UserInfoInCathe struct {
 	db.UserInfo
 }
 
+// GetWhat 缓存操作，
 func (b *UserInfoInCathe) GetWhat(ctx context.Context, what string) (string, error) {
-	result, err := RedisClient.HGet(ctx, "userinfo:"+b.Username, what).Result()
+	result, err := RedisClient.HGet(ctx, "\"userinfo:"+b.Username+"\"", "\""+what+"\"").Result()
 	if err != nil {
 		utils.UserLogger.Error("redis error HGET:" + err.Error())
 		return "", err

@@ -1,6 +1,7 @@
 package handle
 
 import (
+	"LanshanTeam-Examine/client/model"
 	"LanshanTeam-Examine/client/pkg/consts"
 	"LanshanTeam-Examine/client/pkg/utils"
 	"LanshanTeam-Examine/client/rpc/userModule"
@@ -8,15 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type userinfo struct {
-	Username    string `form:"username" json:"username" binding:"required"`
-	Password    string `form:"password" json:"password" binding:"required"`
-	PhoneNumber int    `form:"phone_number" json:"phone_number"`
-	Email       string `form:"phone_number" json:"email"`
-}
-
 func RegisterByPassword(c *gin.Context) {
-	var user userinfo
+	var user model.Userinfo
 
 	if err := c.ShouldBind(&user); err != nil {
 		utils.ClientLogger.Error("ERROR: " + err.Error())
@@ -32,6 +26,7 @@ func RegisterByPassword(c *gin.Context) {
 		Username: user.Username,
 		Password: user.Password,
 	})
+
 	if err != nil {
 		utils.ClientLogger.Error("ERROR:" + err.Error())
 		c.JSON(400, gin.H{
@@ -57,10 +52,23 @@ func RegisterByPassword(c *gin.Context) {
 		"error":   "",
 	})
 }
+func RegisterByPhoneNumber(c *gin.Context) {
+	var user model.Userinfo
 
-func Get(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"status": userModule.UserConn.GetState().String(),
-		"code":   200,
+	if err := c.ShouldBind(&user); err != nil {
+		utils.ClientLogger.Error("ERROR: " + err.Error())
+		c.JSON(400, gin.H{
+			"code":    consts.LackParams,
+			"message": "you should enter your information completely,你应该完善你的信息",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	resp, err := userModule.UserClient.Register(c, &pb.RegisterReq{
+		Username:    user.Username,
+		Password:    user.Password,
+		PhoneNumber: int64(user.PhoneNumber),
 	})
+
 }
