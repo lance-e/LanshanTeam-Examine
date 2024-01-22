@@ -37,7 +37,7 @@ func RegisterByPassword(c *gin.Context) {
 		c.JSON(400, gin.H{
 			"code":    consts.RegisterFailed,
 			"message": "happen error when create user,创建用户时出错",
-			"error":   err,
+			"error":   "服务器端出错" + err.Error(),
 		})
 		return
 	}
@@ -54,7 +54,7 @@ func RegisterByPassword(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"code":    consts.RegisterSuccess,
 		"message": "user create success,用户创建成功",
-		"error":   resp.GetMessage(),
+		"error":   "",
 	})
 }
 

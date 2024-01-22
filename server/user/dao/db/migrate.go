@@ -1,15 +1,17 @@
 package db
 
 import (
+	"LanshanTeam-Examine/server/user/pkg/utils"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func Migrate() error {
-	return DB.AutoMigrate(&UserInfo{})
-	//if err != nil {
-	//	utils.UserLogger.Panic("couldn't migrate the user table")
-	//	return
-	//}
+	err := DB.AutoMigrate(&UserInfo{})
+	if err != nil {
+		utils.UserLogger.Error("couldn't migrate the user table")
+		return err
+	}
+	return nil
 }
