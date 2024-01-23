@@ -6,3 +6,12 @@ type Userinfo struct {
 	PhoneNumber int    `form:"phone_number" json:"phone_number"`
 	Email       string `form:"phone_number" json:"email"`
 }
+
+type Config struct {
+	GithubConfig `mapstructure:"github" json:"github"`
+}
+
+type GithubConfig struct {
+	ClientId      string `mapstructure:"client_id" json:"client_id"`
+	ClientSecrets string `mapstructure:"client_secrets" json:"client_secrets"`
+}

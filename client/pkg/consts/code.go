@@ -10,4 +10,5 @@ const (
 	LoginSuccess
 	LoginFailed
 	GenerateTokenFailed
+	ServeUnavailable
 )

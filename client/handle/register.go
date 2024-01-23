@@ -65,10 +65,10 @@ func RegisterByPhoneNumber(c *gin.Context) {
 		return
 	}
 
-	resp, err := userModule.UserClient.Register(c, &pb.RegisterReq{
-		Username:    user.Username,
-		Password:    user.Password,
-		PhoneNumber: int64(user.PhoneNumber),
-	})
+	//resp, err := userModule.UserClient.Register(c, &pb.RegisterReq{
+	//	Username:    user.Username,
+	//	Password:    user.Password,
+	//	PhoneNumber: int64(user.PhoneNumber),
+	//})
 
 }
