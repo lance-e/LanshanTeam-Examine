@@ -10,7 +10,7 @@ func NewRouter() *gin.Engine {
 	engine := gin.Default()
 	engine.Use(middleware.Cors()) //解决跨域问题
 
-	engine.POST("/")
+	engine.GET("/", handle.HomePage)
 	user := engine.Group("/user")
 	{
 

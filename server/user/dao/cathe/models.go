@@ -24,7 +24,7 @@ func (b *UserInfoInCathe) GetWhat(ctx context.Context, what string) (string, err
 	return result, nil
 }
 func (b *UserInfoInCathe) CreateUser(ctx context.Context) error {
-	err := RedisClient.HSet(ctx, "userinfo:"+b.Username, "username", b.Username, "password", b.Password, "phone_number", b.PhoneNumber, "email", b.Email).Err()
+	err := RedisClient.HSet(ctx, "userinfo:"+b.Username, "username", b.Username, "password", b.Password, "phone_number", b.PhoneNumber, "email", b.Email, "is_github_user", b.IsGithubUser).Err()
 	SetExpireTime(ctx, "userinfo:"+b.Username)
 	if err != nil {
 		utils.UserLogger.Error("redis error HSET:" + err.Error())

@@ -1,9 +1,12 @@
 package handle
 
 import (
+	"LanshanTeam-Examine/client/api/middleware"
 	"LanshanTeam-Examine/client/model"
 	"LanshanTeam-Examine/client/pkg/consts"
 	"LanshanTeam-Examine/client/pkg/utils"
+	"LanshanTeam-Examine/client/rpc/userModule"
+	"LanshanTeam-Examine/client/rpc/userModule/pb"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -109,9 +112,43 @@ func GithubCallback(c *gin.Context) {
 	var name username
 	json.Unmarshal(data, &name)
 	utils.ClientLogger.Info("username use github  : " + name.Username)
+	githubUserName := name.Username
+	//开始调用远程登陆服务
+	loginreq := &pb.LoginReq{
+		Username:     githubUserName,
+		Password:     "",
+		IsGithubUser: true,
+	}
 
-	//开始调用远程注册服务
-	//userModule.UserClient.Register(c,)
+	loginResp, err := userModule.UserClient.Login(c, loginreq)
+	utils.ClientLogger.Debug("request send")
+	//c.Redirect(307, "http://localhost:8080/") //回调到主页
+	if err != nil {
+		utils.ClientLogger.Error("create github user information failed")
+		c.JSON(400, gin.H{
+			"status":  consts.ServeUnavailable,
+			"message": loginResp.GetMessage(),
+			"error":   err.Error(),
+		})
+		//不返回
+	} else {
+		utils.ClientLogger.Error("create github user information success")
+		var user model.Userinfo
+		user.Username = githubUserName
+		token, err := middleware.GetToken(&user)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"status":  consts.GenerateTokenFailed,
+				"message": "generate token failed",
+				"error":   err.Error(),
+			})
+		}
+		c.JSON(200, gin.H{
+			"status":  consts.LoginSuccess,
+			"message": "login success",
+			"error":   "",
+			"token":   token,
+		})
+	}
 
-	c.Redirect(307, "http://localhost:8080/") //回调到主页
 }

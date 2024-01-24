@@ -7,7 +7,6 @@ message RegisterReq {
   string password =2;
   int64 phoneNumber=3;
   string email =4;
-  //string githubName=5;
 }
 
 message RegisterResp{
@@ -19,7 +18,7 @@ message LoginReq{
   string password =2;
   int64 phoneNumber=3;
   string email =4;
-  //string githubName=5;
+  bool isGithubUser=5;
 }
 message LoginResp{
   bool flag=1;

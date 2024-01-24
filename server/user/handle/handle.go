@@ -16,13 +16,13 @@ type UserServer struct {
 
 func (U *UserServer) Register(ctx context.Context, req *pb.RegisterReq) (*pb.RegisterResp, error) {
 	//先写一个密码登陆
-	utils.UserLogger.Debug("username : " + req.Username)
-	utils.UserLogger.Debug("password : " + req.Password)
+	utils.UserLogger.Debug("username : " + req.GetUsername())
+	utils.UserLogger.Debug("password : " + req.GetPassword())
 	dbUser := &db.UserInfo{
-		Username:    req.Username,
-		Password:    req.Password,
-		PhoneNumber: int(req.PhoneNumber),
-		Email:       req.Email,
+		Username:    req.GetUsername(),
+		Password:    req.GetPassword(),
+		PhoneNumber: int(req.GetPhoneNumber()),
+		Email:       req.GetEmail(),
 	}
 	catheUser := &cathe.UserInfoInCathe{
 		*dbUser,
@@ -74,20 +74,39 @@ func (U *UserServer) Register(ctx context.Context, req *pb.RegisterReq) (*pb.Reg
 }
 
 func (u *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp, error) {
-	utils.UserLogger.Debug("username : " + req.Username)
-	utils.UserLogger.Debug("password : " + req.Password)
-
+	utils.UserLogger.Debug("username : " + req.GetUsername())
+	utils.UserLogger.Debug("password : " + req.GetPassword())
+	//初始化环节
 	dbUser := &db.UserInfo{
-		Username:    req.Username,
-		Password:    req.Password,
-		PhoneNumber: int(req.PhoneNumber),
-		Email:       req.Email,
+		Username:     req.GetUsername(),
+		Password:     req.GetPassword(),
+		PhoneNumber:  int(req.GetPhoneNumber()),
+		Email:        req.GetEmail(),
+		IsGithubUser: req.GetIsGithubUser(),
 	}
 	catheUser := &cathe.UserInfoInCathe{
 		*dbUser,
 	}
-
 	var realUser = new(db.UserInfo)
+
+	//github第三方登陆到逻辑
+	if dbUser.IsGithubUser {
+		err := GithubUserLogin(ctx, catheUser, realUser)
+		if err != nil {
+			utils.UserLogger.Error("github user login failed , ERROR:" + err.Error())
+			return &pb.LoginResp{
+				Message: "create github user information failed",
+				Flag:    false,
+			}, err
+		}
+		utils.UserLogger.Info("github user login success")
+		return &pb.LoginResp{
+			Message: "github user login success",
+			Flag:    true,
+		}, nil
+
+	}
+
 	//检查用户是否存在
 	flag, err := catheCheckUserIsAlreadyExist(ctx, catheUser)
 
@@ -151,13 +170,40 @@ func (u *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp
 	}, nil
 }
 
+func GithubUserLogin(ctx context.Context, githubUser *cathe.UserInfoInCathe, realUser *db.UserInfo) error {
+	//客户端传来登陆成功的用户名，我们先在缓存中找，没找到，到数据库找，没找到，就在数据库创建，再同步到缓存中
+	//统一在用户名后+(github)标识
+	githubUser.Username = githubUser.Username + "(github)"
+	utils.UserLogger.Debug("github user name rename : " + githubUser.Username)
+	flag, err := catheCheckUserIsAlreadyExist(ctx, githubUser)
+	if flag && err == nil {
+		utils.UserLogger.Debug("github user info found in cathe")
+		return nil
+	} else {
+		err = dbCheckUserIsAlreadyExist(ctx, githubUser, realUser)
+		if err == nil {
+			utils.UserLogger.Debug("github user info fund in database")
+			return nil
+		}
+
+	}
+	//
+	utils.UserLogger.Debug("github user info not fund in database,begin to create user")
+	err = githubUser.Create()
+	if err != nil {
+		return err
+	}
+	githubUser.CreateUser(ctx) //不处理错误
+	return nil
+}
+
 func dbCheckUserIsAlreadyExist(ctx context.Context, user *cathe.UserInfoInCathe, realUser *db.UserInfo) error {
 
 	if err := user.Get("username", user.Username, realUser); err != nil {
 		utils.UserLogger.Info(" not fund in database")
 		return errors.New("not fund in database")
 	}
-	err := user.CreateUser(ctx)
+	err := user.CreateUser(ctx) //create info in cathe
 	if err != nil {
 		utils.UserLogger.Info("create user cathe failed , ERROR:" + err.Error())
 	} else {

@@ -24,8 +24,9 @@ func Login(c *gin.Context) {
 		return
 	}
 	resp, err := userModule.UserClient.Login(c, &pb.LoginReq{
-		Username: user.Username,
-		Password: user.Password,
+		Username:     user.Username,
+		Password:     user.Password,
+		IsGithubUser: false,
 	})
 	if err != nil {
 		if err.Error() == "wrong password" {

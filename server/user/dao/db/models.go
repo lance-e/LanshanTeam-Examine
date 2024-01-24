@@ -5,10 +5,11 @@ import (
 )
 
 type UserInfo struct {
-	Username    string `gorm:"username" json:"username"`
-	Password    string `gorm:"password" json:"password"`
-	PhoneNumber int    `gorm:"phone_number" json:"phone_number"`
-	Email       string `gorm:"email" json:"email"`
+	Username     string `gorm:"username" json:"username"`
+	Password     string `gorm:"password" json:"password"`
+	PhoneNumber  int    `gorm:"phone_number" json:"phone_number"`
+	Email        string `gorm:"email" json:"email"`
+	IsGithubUser bool   `gorm:"is_github_user" json:"is_github_user"`
 }
 
 func (u UserInfo) TableName() string {
@@ -25,7 +26,7 @@ func (u *UserInfo) Get(what, value string, user *UserInfo) error {
 	return nil
 }
 func (u *UserInfo) Create() error {
-	err := DB.Create(u).Error
+	err := DB.Model(&UserInfo{}).Create(u).Error
 	if err != nil {
 		utils.UserLogger.Error("CREATE: " + err.Error())
 		return err
