@@ -15,10 +15,14 @@ func NewRouter() *gin.Engine {
 	{
 
 		user.POST("/register/byPassword", handle.RegisterByPassword)
-		//user.POST("/register/byPhoneNumber", handle.RegisterByPhoneNumber)
+		user.POST("/register/byPhoneNumber", handle.RegisterByPhoneNumber)
 
 		user.POST("/login/byPassword", handle.Login)
 
+		//电话号码
+		user.POST("/sendCode", handle.SendCode)
+
+		//github第三方注册登陆
 		user.GET("/githubRegisterAndLogin", handle.GithubRegisterAndLogin)
 		user.GET("/githubCallback", handle.GithubCallback)
 

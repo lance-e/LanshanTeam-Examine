@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -26,7 +25,7 @@ type username struct {
 	Username string `json:"login"`
 }
 
-var config model.Config
+var github model.Config
 
 func GithubRegisterAndLogin(c *gin.Context) {
 
@@ -41,9 +40,7 @@ func GithubRegisterAndLogin(c *gin.Context) {
 		})
 		return
 	}
-	log.Println(config)
-	err = viper.Unmarshal(&config)
-	log.Println(config)
+	err = viper.Unmarshal(&github)
 
 	if err != nil {
 		utils.ClientLogger.Error("GithubRegisterAndLogin can't unmarshal the config , ERROR:" + err.Error())
@@ -57,7 +54,7 @@ func GithubRegisterAndLogin(c *gin.Context) {
 
 	//开始调api
 	callback := "http://localhost:8080/user/githubCallback"
-	c.Redirect(307, "https://github.com/login/oauth/authorize?client_id="+config.ClientId+"&redirect_url="+callback+"&scope=user&state=random")
+	c.Redirect(307, "https://github.com/login/oauth/authorize?client_id="+github.ClientId+"&redirect_url="+callback+"&scope=user&state=random")
 }
 func GithubCallback(c *gin.Context) {
 
@@ -69,7 +66,7 @@ func GithubCallback(c *gin.Context) {
 	//url to get token
 	url := fmt.Sprintf(
 		"https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s",
-		config.ClientId, config.ClientSecrets, code,
+		github.ClientId, github.ClientSecrets, code,
 	)
 
 	req, err := http.NewRequest(http.MethodPost, url, nil)
@@ -119,8 +116,8 @@ func GithubCallback(c *gin.Context) {
 		Password:     "",
 		IsGithubUser: true,
 	}
-
 	loginResp, err := userModule.UserClient.Login(c, loginreq)
+
 	utils.ClientLogger.Debug("request send")
 	//c.Redirect(307, "http://localhost:8080/") //回调到主页
 	if err != nil {

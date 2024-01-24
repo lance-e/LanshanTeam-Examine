@@ -11,4 +11,6 @@ const (
 	LoginFailed
 	GenerateTokenFailed
 	ServeUnavailable
+	SentCodeSuccess
+	CodeWrong
 )
