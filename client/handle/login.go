@@ -7,6 +7,7 @@ import (
 	"LanshanTeam-Examine/client/pkg/utils"
 	"LanshanTeam-Examine/client/rpc/userModule"
 	"LanshanTeam-Examine/client/rpc/userModule/pb"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -68,5 +69,66 @@ func Login(c *gin.Context) {
 		"error":   "",
 		"token":   token,
 	})
+
+}
+func LoginByPhoneNumber(c *gin.Context) {
+	var params model.JustForLoginByPhoneNumber
+	if err := c.ShouldBind(&params); err != nil {
+		utils.ClientLogger.Error("ERROR: " + err.Error())
+		c.JSON(400, gin.H{
+			"code":    consts.LackParams,
+			"message": "you should enter your information completely,你应该完善你的信息",
+			"error":   err.Error(),
+		})
+		return
+	}
+	if err := VerifyCode(params.Code, params.PhoneNumber); err != nil {
+		utils.ClientLogger.Error("verifyCode in login by phone number ,code wrong")
+		c.JSON(400, gin.H{
+			"code":    consts.CodeWrong,
+			"message": "code wrong ,验证码错误",
+			"error":   err.Error(),
+		})
+		return
+	}
+	utils.ClientLogger.Info("verify success")
+
+	num, _ := strconv.Atoi(params.PhoneNumber)
+	resp, err := userModule.UserClient.Login(c, &pb.LoginReq{
+		Username:    params.Username,
+		PhoneNumber: int64(num),
+	})
+	if err != nil {
+		utils.ClientLogger.Error("login by phone number failed")
+		c.JSON(400, gin.H{
+			"status":  consts.PhoneNumberUnavailable,
+			"message": resp.GetMessage(),
+			"error":   err.Error(),
+		})
+		return
+	} else {
+		utils.ClientLogger.Error("login by phone number success")
+
+		token, err := middleware.GetToken(&model.Userinfo{
+			Username: params.Username,
+		})
+		if err != nil {
+			utils.ClientLogger.Error("generate token failed,ERROR: " + err.Error())
+			c.JSON(400, gin.H{
+				"code":    consts.GenerateTokenFailed,
+				"message": "generate token failed",
+				"error":   err.Error(),
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"status":  consts.LoginSuccess,
+			"message": resp.GetMessage(),
+			"error":   nil,
+			"token":   token,
+		})
+
+	}
 
 }

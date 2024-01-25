@@ -13,4 +13,5 @@ const (
 	ServeUnavailable
 	SentCodeSuccess
 	CodeWrong
+	PhoneNumberUnavailable
 )

@@ -10,18 +10,17 @@ type Userinfo struct {
 	IsGithubUser bool   `form:"is_github_user" json:"is_github_user"`
 	Code         int64  `form:"code" json:"code"`
 }
+type JustForLoginByPhoneNumber struct {
+	Username    string `form:"username" json:"username" binding:"required"`
+	PhoneNumber string `form:"phone_number" json:"phone_number" binding:"required"`
+	Code        int64  `form:"code" json:"code" binding:"required"`
+}
 
 // 验证码信息
 type CodeInfo struct {
 	Code     int64     `form:"code" json:"code"`
 	ExpireAt time.Time `form:"expire_at" json:"expire_at"`
 }
-
-//type CodeInfo struct {
-//	Code     int64     `form:"code" json:"code"`
-//	ExpireAt time.Time `form:"expire_at" json:"expire_at"`
-//	RequestNumber string `form:"request_number" json:"request_number"`
-//}
 
 type Config struct {
 	GithubConfig `mapstructure:"github" json:"github"`

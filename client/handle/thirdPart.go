@@ -127,7 +127,7 @@ func GithubCallback(c *gin.Context) {
 			"message": loginResp.GetMessage(),
 			"error":   err.Error(),
 		})
-		//不返回
+		//return //不返回,因为想做重定向，返回了，就无法重定向了
 	} else {
 		utils.ClientLogger.Error("create github user information success")
 		var user model.Userinfo

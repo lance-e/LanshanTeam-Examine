@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"strconv"
 )
 
 type UserServer struct {
@@ -104,12 +105,10 @@ func (u *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp
 			Message: "github user login success",
 			Flag:    true,
 		}, nil
-
 	}
 
 	//检查用户是否存在
 	flag, err := catheCheckUserIsAlreadyExist(ctx, catheUser)
-
 	if !flag && err != nil {
 		if err := dbCheckUserIsAlreadyExist(ctx, catheUser, realUser); err != nil {
 			return &pb.LoginResp{
@@ -119,6 +118,24 @@ func (u *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp
 		}
 	}
 	log.Println("用户存在")
+
+	//电话号码登陆
+	if req.PhoneNumber != 0 {
+		err := LoginByPhoneNumber(ctx, catheUser, realUser)
+		if err != nil {
+			utils.UserLogger.Error("login by phone number failed , ERROR:" + err.Error())
+			return &pb.LoginResp{
+				Message: "login by phone number failed",
+				Flag:    false,
+			}, err
+		}
+		utils.UserLogger.Info("github user login success")
+		return &pb.LoginResp{
+			Message: "login by phone number success",
+			Flag:    true,
+		}, nil
+	}
+
 	//用户存在 检查密码
 	passwordInCathe, err := catheUser.GetWhat(ctx, "password")
 	if err != nil {
@@ -130,11 +147,7 @@ func (u *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp
 				Flag:    false,
 			}, err
 		}
-		log.Println("到此一游")
-		log.Println(realUser.Password)
-		log.Println(catheUser.Password)
-		log.Println(dbUser.Password)
-		log.Println("===========================")
+
 		err = utils.Compare(realUser.Password, catheUser.Password)
 
 		if err != nil {
@@ -195,6 +208,39 @@ func GithubUserLogin(ctx context.Context, githubUser *cathe.UserInfoInCathe, rea
 	}
 	githubUser.CreateUser(ctx) //不处理错误
 	return nil
+}
+
+func LoginByPhoneNumber(ctx context.Context, enteredUser *cathe.UserInfoInCathe, realUser *db.UserInfo) error {
+	//此时用户名是存在的，就只需要查询该电话号码跟数据库里面的电话号码是否相同。两种情况：1.用户没有绑定电话号码，为0；2.用户的电话号码绑定的不是这个
+	//先查缓存，命中则返回，未命中就查数据库，查到就同步到缓存，并返回
+	num, err := enteredUser.GetWhat(ctx, "phone_number")
+	if err != nil {
+		utils.UserLogger.Info("user register by phone number found in cathe ")
+		err = enteredUser.Get("username", enteredUser.Username, realUser)
+		if err != nil {
+			utils.UserLogger.Error("login by phone number : database wrong")
+			return err
+		}
+		if enteredUser.PhoneNumber != realUser.PhoneNumber {
+			utils.UserLogger.Info("phone number is wrong compared with database")
+			return errors.New("phone number is wrong compared with database")
+		}
+		err := enteredUser.CreateUser(ctx) //create info in cathe
+		if err != nil {
+			utils.UserLogger.Info("create user cathe failed , ERROR:" + err.Error())
+		} else {
+			utils.UserLogger.Info("create user cathe success ")
+		}
+		return nil
+
+	} else {
+		number, _ := strconv.Atoi(num)
+		if number != enteredUser.PhoneNumber {
+			utils.UserLogger.Error("phone number is wrong compared with cathe")
+			return errors.New("phone number is wrong compared with cathe")
+		}
+		return nil
+	}
 }
 
 func dbCheckUserIsAlreadyExist(ctx context.Context, user *cathe.UserInfoInCathe, realUser *db.UserInfo) error {

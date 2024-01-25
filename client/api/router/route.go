@@ -18,6 +18,7 @@ func NewRouter() *gin.Engine {
 		user.POST("/register/byPhoneNumber", handle.RegisterByPhoneNumber)
 
 		user.POST("/login/byPassword", handle.Login)
+		user.POST("/login/byPhoneNumber", handle.LoginByPhoneNumber)
 
 		//电话号码
 		user.POST("/sendCode", handle.SendCode)
