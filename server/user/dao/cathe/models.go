@@ -16,13 +16,22 @@ type UserInfoInCathe struct {
 
 // GetWhat 缓存操作，
 func (b *UserInfoInCathe) GetWhat(ctx context.Context, what string) (string, error) {
-	result, err := RedisClient.HGet(ctx, "\"userinfo:"+b.Username+"\"", "\""+what+"\"").Result()
+	result, err := RedisClient.HGet(ctx, "userinfo:"+b.Username+"", ""+what+"").Result()
 	if err != nil {
 		utils.UserLogger.Error("redis error HGET:" + err.Error())
 		return "", err
 	}
 	return result, nil
 }
+func (b *UserInfoInCathe) GetAll(ctx context.Context) (map[string]string, error) {
+	result, err := RedisClient.HGetAll(ctx, "userinfo:"+b.Username+"").Result()
+	if err != nil {
+		utils.UserLogger.Error("redis error HGETALL:" + err.Error())
+		return nil, err
+	}
+	return result, err
+}
+
 func (b *UserInfoInCathe) CreateUser(ctx context.Context) error {
 	err := RedisClient.HSet(ctx, "userinfo:"+b.Username, "username", b.Username, "password", b.Password, "phone_number", b.PhoneNumber, "email", b.Email, "is_github_user", b.IsGithubUser).Err()
 	SetExpireTime(ctx, "userinfo:"+b.Username)

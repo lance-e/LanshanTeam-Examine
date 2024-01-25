@@ -10,7 +10,6 @@ func NewRouter() *gin.Engine {
 	engine := gin.Default()
 	engine.Use(middleware.Cors()) //解决跨域问题
 
-	engine.GET("/", handle.HomePage)
 	user := engine.Group("/user")
 	{
 
@@ -28,6 +27,7 @@ func NewRouter() *gin.Engine {
 		user.GET("/githubCallback", handle.GithubCallback)
 
 		user.Use(middleware.JWT())
+		user.GET("/information", handle.HomePage)
 
 	}
 

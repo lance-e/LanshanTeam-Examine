@@ -101,7 +101,7 @@ func LoginByPhoneNumber(c *gin.Context) {
 	if err != nil {
 		utils.ClientLogger.Error("login by phone number failed")
 		c.JSON(400, gin.H{
-			"status":  consts.PhoneNumberUnavailable,
+			"code":    consts.PhoneNumberUnavailable,
 			"message": resp.GetMessage(),
 			"error":   err.Error(),
 		})
@@ -123,7 +123,7 @@ func LoginByPhoneNumber(c *gin.Context) {
 		}
 
 		c.JSON(200, gin.H{
-			"status":  consts.LoginSuccess,
+			"code":    consts.LoginSuccess,
 			"message": resp.GetMessage(),
 			"error":   nil,
 			"token":   token,

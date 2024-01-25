@@ -2,14 +2,17 @@ package db
 
 import (
 	"LanshanTeam-Examine/server/user/pkg/utils"
+	"gorm.io/gorm"
 )
 
 type UserInfo struct {
+	gorm.Model
 	Username     string `gorm:"username" json:"username"`
 	Password     string `gorm:"password" json:"password"`
 	PhoneNumber  int    `gorm:"phone_number" json:"phone_number"`
 	Email        string `gorm:"email" json:"email"`
 	IsGithubUser bool   `gorm:"is_github_user" json:"is_github_user"`
+	Score        int    `gorm:"score" json:"score"`
 }
 
 func (u UserInfo) TableName() string {

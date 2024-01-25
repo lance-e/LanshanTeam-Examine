@@ -119,11 +119,10 @@ func GithubCallback(c *gin.Context) {
 	loginResp, err := userModule.UserClient.Login(c, loginreq)
 
 	utils.ClientLogger.Debug("request send")
-	//c.Redirect(307, "http://localhost:8080/") //回调到主页
 	if err != nil {
 		utils.ClientLogger.Error("create github user information failed")
 		c.JSON(400, gin.H{
-			"status":  consts.ServeUnavailable,
+			"code":    consts.ServeUnavailable,
 			"message": loginResp.GetMessage(),
 			"error":   err.Error(),
 		})
@@ -135,17 +134,18 @@ func GithubCallback(c *gin.Context) {
 		token, err := middleware.GetToken(&user)
 		if err != nil {
 			c.JSON(400, gin.H{
-				"status":  consts.GenerateTokenFailed,
+				"code":    consts.GenerateTokenFailed,
 				"message": "generate token failed",
 				"error":   err.Error(),
 			})
 		}
 		c.JSON(200, gin.H{
-			"status":  consts.LoginSuccess,
+			"code":    consts.LoginSuccess,
 			"message": "login success",
 			"error":   "",
 			"token":   token,
 		})
 	}
+	//c.Redirect(307, "http://localhost:8080/") //回调到主页
 
 }

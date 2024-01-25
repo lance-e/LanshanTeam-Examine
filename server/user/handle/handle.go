@@ -74,7 +74,7 @@ func (U *UserServer) Register(ctx context.Context, req *pb.RegisterReq) (*pb.Reg
 
 }
 
-func (u *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp, error) {
+func (U *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp, error) {
 	utils.UserLogger.Debug("username : " + req.GetUsername())
 	utils.UserLogger.Debug("password : " + req.GetPassword())
 	//初始化环节
@@ -151,13 +151,14 @@ func (u *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp
 		err = utils.Compare(realUser.Password, catheUser.Password)
 
 		if err != nil {
-			utils.UserLogger.Error("wrong password,ERROR:" + err.Error())
+			utils.UserLogger.Error("wrong password in database,ERROR:" + err.Error())
 			return &pb.LoginResp{
 				Message: "wrong password",
 				Flag:    false,
 			}, errors.New("wrong password")
 		}
 		//存入缓存
+		catheUser.UserInfo = *realUser
 		err = catheUser.CreateUser(ctx)
 		if err != nil {
 			utils.UserLogger.Error("create user in cathe failed:" + err.Error())
@@ -168,7 +169,7 @@ func (u *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp
 		//缓存命中
 		err = utils.Compare(passwordInCathe, dbUser.Password)
 		if err != nil {
-			utils.UserLogger.Error("wrong password,ERROR:" + err.Error())
+			utils.UserLogger.Error("wrong password in cathe,ERROR:" + err.Error())
 			return &pb.LoginResp{
 				Message: "wrong password",
 				Flag:    false,
@@ -260,7 +261,7 @@ func dbCheckUserIsAlreadyExist(ctx context.Context, user *cathe.UserInfoInCathe,
 func catheCheckUserIsAlreadyExist(ctx context.Context, catheUser *cathe.UserInfoInCathe) (bool, error) {
 	_, err := catheUser.GetWhat(ctx, "username") //先找，没找到就是没存到缓存,找到就是存在
 	if err != nil {
-		utils.UserLogger.Info("not found in cathe ")
+		utils.UserLogger.Info("not found in cathe ERROR:" + err.Error())
 		return false, errors.New("not found in cathe")
 	}
 	utils.UserLogger.Info("found in cathe")

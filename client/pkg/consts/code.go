@@ -10,8 +10,11 @@ const (
 	LoginSuccess
 	LoginFailed
 	GenerateTokenFailed
+	TokenInvalid
 	ServeUnavailable
 	SentCodeSuccess
 	CodeWrong
 	PhoneNumberUnavailable
+	GetUserAllInformationSuccess
+	GetUserAllInformationFailed
 )
