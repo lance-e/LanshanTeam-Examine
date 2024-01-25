@@ -23,7 +23,6 @@ message LoginReq{
 message LoginResp{
   bool flag=1;
   string message=2;
-  string token =3;
 }
 message HomePageReq{
   string username =1;
@@ -35,7 +34,12 @@ message HomePageResp{
   int64  score=4;
 }
 message AddFriendReq{
-  string username =1;
+  string sender =1;
+  string receiver =2;
+  bool isRequest=3;
+}
+message AddFriendResp{
+  bool flag=1;
 }
 
 
@@ -43,4 +47,5 @@ service User{
   rpc Register(RegisterReq)returns(RegisterResp);
   rpc Login(LoginReq)returns(LoginResp);
   rpc HomePage(HomePageReq)returns(HomePageResp);
+  rpc AddFriend(AddFriendReq)returns (AddFriendResp);
 }

@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	User_Register_FullMethodName = "/User/Register"
-	User_Login_FullMethodName    = "/User/Login"
-	User_HomePage_FullMethodName = "/User/HomePage"
+	User_Register_FullMethodName  = "/User/Register"
+	User_Login_FullMethodName     = "/User/Login"
+	User_HomePage_FullMethodName  = "/User/HomePage"
+	User_AddFriend_FullMethodName = "/User/AddFriend"
 )
 
 // UserClient is the client API for User service.
@@ -31,6 +32,7 @@ type UserClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 	HomePage(ctx context.Context, in *HomePageReq, opts ...grpc.CallOption) (*HomePageResp, error)
+	AddFriend(ctx context.Context, in *AddFriendReq, opts ...grpc.CallOption) (*AddFriendResp, error)
 }
 
 type userClient struct {
@@ -68,6 +70,15 @@ func (c *userClient) HomePage(ctx context.Context, in *HomePageReq, opts ...grpc
 	return out, nil
 }
 
+func (c *userClient) AddFriend(ctx context.Context, in *AddFriendReq, opts ...grpc.CallOption) (*AddFriendResp, error) {
+	out := new(AddFriendResp)
+	err := c.cc.Invoke(ctx, User_AddFriend_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type UserServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	HomePage(context.Context, *HomePageReq) (*HomePageResp, error)
+	AddFriend(context.Context, *AddFriendReq) (*AddFriendResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedUserServer) Login(context.Context, *LoginReq) (*LoginResp, er
 }
 func (UnimplementedUserServer) HomePage(context.Context, *HomePageReq) (*HomePageResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HomePage not implemented")
+}
+func (UnimplementedUserServer) AddFriend(context.Context, *AddFriendReq) (*AddFriendResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddFriend not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -158,6 +173,24 @@ func _User_HomePage_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_AddFriend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddFriendReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AddFriend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_AddFriend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AddFriend(ctx, req.(*AddFriendReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HomePage",
 			Handler:    _User_HomePage_Handler,
+		},
+		{
+			MethodName: "AddFriend",
+			Handler:    _User_AddFriend_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

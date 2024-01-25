@@ -33,7 +33,8 @@ func (b *UserInfoInCathe) GetAll(ctx context.Context) (map[string]string, error)
 }
 
 func (b *UserInfoInCathe) CreateUser(ctx context.Context) error {
-	err := RedisClient.HSet(ctx, "userinfo:"+b.Username, "username", b.Username, "password", b.Password, "phone_number", b.PhoneNumber, "email", b.Email, "is_github_user", b.IsGithubUser).Err()
+	err := RedisClient.HSet(ctx, "userinfo:"+b.Username, "username", b.Username,
+		"password", b.Password, "phone_number", b.PhoneNumber, "email", b.Email, "is_github_user", b.IsGithubUser, "score", b.Score).Err()
 	SetExpireTime(ctx, "userinfo:"+b.Username)
 	if err != nil {
 		utils.UserLogger.Error("redis error HSET:" + err.Error())
@@ -41,6 +42,7 @@ func (b *UserInfoInCathe) CreateUser(ctx context.Context) error {
 	}
 	return nil
 }
+
 func SetExpireTime(ctx context.Context, key string) {
 	err := RedisClient.Expire(ctx, key, 10*time.Minute).Err()
 	if err != nil {

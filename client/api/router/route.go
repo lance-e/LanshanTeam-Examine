@@ -19,7 +19,7 @@ func NewRouter() *gin.Engine {
 		user.POST("/login/byPassword", handle.Login)
 		user.POST("/login/byPhoneNumber", handle.LoginByPhoneNumber)
 
-		//电话号码
+		//验证码
 		user.POST("/sendCode", handle.SendCode)
 
 		//github第三方注册登陆
@@ -28,6 +28,7 @@ func NewRouter() *gin.Engine {
 
 		user.Use(middleware.JWT())
 		user.GET("/information", handle.HomePage)
+		user.POST("/addFriend", handle.SendFriendRequest)
 
 	}
 
