@@ -15,13 +15,21 @@ func (U *UserServer) AddFriend(ctx context.Context, req *pb.AddFriendReq) (*pb.A
 		Sender:   req.Sender,
 		Receiver: req.Receiver,
 	}
+	utils.UserLogger.Debug("sender:" + req.Sender)
+	utils.UserLogger.Debug("receiver:" + req.Receiver)
+
+	if friendship.CheckState() {
+		return &pb.AddFriendResp{
+			Flag: false,
+		}, errors.New("you are friends")
+	}
 	if req.IsRequest {
 		//检查接受者是否存在
 		catheUser := cathe.UserInfoInCathe{}
 		catheUser.Username = req.Receiver
 		flag, err := catheCheckUserIsAlreadyExist(ctx, &catheUser)
 		if !flag && err != nil {
-			if err := dbCheckUserIsAlreadyExist(ctx, &catheUser, nil); err != nil {
+			if err := dbCheckUserIsAlreadyExist(ctx, &catheUser, &db.UserInfo{}); err != nil {
 				return &pb.AddFriendResp{
 					Flag: false,
 				}, errors.New("receiver not found ")

@@ -8,7 +8,7 @@ import (
 var DB *gorm.DB
 
 func Migrate() error {
-	err := DB.AutoMigrate(&UserInfo{})
+	err := DB.AutoMigrate(&UserInfo{}, &FriendShip{})
 	if err != nil {
 		utils.UserLogger.Error("couldn't migrate the user table")
 		return err

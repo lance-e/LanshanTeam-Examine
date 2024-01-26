@@ -66,12 +66,10 @@ func (U *UserServer) Register(ctx context.Context, req *pb.RegisterReq) (*pb.Reg
 		utils.UserLogger.Info("cathe: userinfo create success")
 
 	}
-
 	return &pb.RegisterResp{
 		Message: "user create success",
 		Flag:    true,
 	}, nil
-
 }
 
 func (U *UserServer) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp, error) {
@@ -250,6 +248,7 @@ func dbCheckUserIsAlreadyExist(ctx context.Context, user *cathe.UserInfoInCathe,
 		utils.UserLogger.Info(" not fund in database")
 		return errors.New("not fund in database")
 	}
+	user.Password = realUser.Password
 	err := user.CreateUser(ctx) //create info in cathe
 	if err != nil {
 		utils.UserLogger.Info("create user cathe failed , ERROR:" + err.Error())

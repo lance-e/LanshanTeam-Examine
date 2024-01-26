@@ -102,11 +102,17 @@ func SendCode(c *gin.Context) {
 		}
 		str, _ := util.AssertAsString(error.Message)
 		utils.ClientLogger.Debug("the error of failed to send code :" + tea.StringValue(str))
+		c.JSON(400, gin.H{
+			"code":    consts.SendCodeFailed,
+			"message": "send code failed",
+			"error":   str,
+		})
+		return
 	}
 	c.JSON(200, gin.H{
-		"code":    consts.SentCodeSuccess,
+		"code":    consts.SendCodeSuccess,
 		"message": "sent code success",
-		"error":   "",
+		"error":   nil,
 	})
 }
 

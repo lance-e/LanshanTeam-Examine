@@ -66,7 +66,7 @@ func Login(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"code":    consts.LoginSuccess,
 		"message": "login success,用户登陆成功",
-		"error":   "",
+		"error":   nil,
 		"token":   token,
 	})
 

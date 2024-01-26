@@ -29,7 +29,7 @@ func NewRouter() *gin.Engine {
 		user.Use(middleware.JWT())
 		user.GET("/information", handle.HomePage)
 		user.POST("/addFriend", handle.SendFriendRequest)
-
+		user.POST("/acceptAddFriend", handle.ReceiveFriendRequest)
 	}
 
 	return engine

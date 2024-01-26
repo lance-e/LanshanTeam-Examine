@@ -57,22 +57,25 @@ func (u *UserInfo) Delete() {
 
 func (f *FriendShip) IsRequestAlreadyExists() bool {
 	err := DB.Model(&FriendShip{}).Where("sender = ? && receiver = ? ", f.Sender, f.Receiver).First(nil).Error
-	if err != nil {
+	if err == nil {
 		utils.UserLogger.Info("request already exists or database is error")
 		return true
 	}
 	return false
 }
-
-//func (f *FriendShip) ConvertRequest() bool {
-//	err := DB.Model(&FriendShip{}).Where("sender = ? && receiver = ? ", f.Receiver, f.Sender).First(nil).Error
-//	if err == nil {
-//		utils.UserLogger.Info("ready to accept the request")
-//		return true
-//	}
-//	return false
-//}
-
+func (f *FriendShip) CheckState() bool {
+	var flag bool
+	err := DB.Model(&FriendShip{}).Select("status").Where("sender = ? && receiver = ?", f.Sender, f.Receiver).Find(&flag).Error
+	if err != nil {
+		err = DB.Model(&FriendShip{}).Select("status").Where("sender = ? && receiver = ?", f.Receiver, f.Sender).Find(&flag).Error
+		if err != nil {
+			utils.UserLogger.Error("not any connection ")
+			return false
+		}
+		return flag
+	}
+	return flag
+}
 func (f *FriendShip) Create() error {
 	err := DB.Model(&FriendShip{}).Create(f).Error
 	if err != nil {

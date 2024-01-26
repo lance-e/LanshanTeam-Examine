@@ -12,9 +12,14 @@ const (
 	GenerateTokenFailed
 	TokenInvalid
 	ServeUnavailable
-	SentCodeSuccess
+	SendCodeSuccess
+	SendCodeFailed
 	CodeWrong
 	PhoneNumberUnavailable
 	GetUserAllInformationSuccess
 	GetUserAllInformationFailed
+)
+const (
+	AddFriendRequestSuccess = 1015 + iota
+	CreateFriendSuccess
 )

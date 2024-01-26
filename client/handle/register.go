@@ -50,17 +50,26 @@ func RegisterByPassword(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"code":    consts.RegisterSuccess,
 		"message": "user create success,用户创建成功",
-		"error":   "",
+		"error":   nil,
 	})
 }
 func RegisterByPhoneNumber(c *gin.Context) {
 	var user model.Userinfo
 
-	if err := c.ShouldBind(&user); err != nil {
+	err := c.ShouldBind(&user)
+	if err != nil {
 		utils.ClientLogger.Error("ERROR: " + err.Error())
 		c.JSON(400, gin.H{
 			"code":    consts.LackParams,
 			"message": "you should enter your information completely,你应该完善你的信息",
+			"error":   err.Error(),
+		})
+		return
+	}
+	if user.Code == 0 {
+		c.JSON(400, gin.H{
+			"code":    consts.LackParams,
+			"message": "you should enter code,你应该输入验证码",
 			"error":   err.Error(),
 		})
 		return
@@ -104,7 +113,7 @@ func RegisterByPhoneNumber(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"code":    consts.RegisterSuccess,
 		"message": "user create success,用户创建成功",
-		"error":   "",
+		"error":   nil,
 	})
 
 }
