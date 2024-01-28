@@ -22,4 +22,9 @@ const (
 const (
 	AddFriendRequestSuccess = 1015 + iota
 	CreateFriendSuccess
+	StartGameFailed
+	StartGameSuccess
+	NotFoundTargetGameRoom
+	ReadyToPlayGameFailed
+	ReadyToPlayGameSuccess
 )

@@ -62,7 +62,7 @@ func SendCode(c *gin.Context) {
 
 	sendSmsRequest := &dysmsapi20170525.SendSmsRequest{
 		SignName:      tea.String("lance47"),
-		TemplateCode:  tea.String("SMS_464801260"),
+		TemplateCode:  tea.String("SMS_465025228"),
 		PhoneNumbers:  tea.String(phoneNumber),
 		TemplateParam: tea.String(GenerateCode(phoneNumber)),
 	}
@@ -131,7 +131,7 @@ func CreateClient(accessKeyId *string, accessKeySecret *string) (_result *dysmsa
 func GenerateCode(num string) string {
 	number := rand.New(rand.NewSource(time.Now().Unix()))
 	var newCodeInfo model.CodeInfo
-	newCodeInfo.Code = number.Int63n(10000)
+	newCodeInfo.Code = number.Int63n(9000) + 1000
 	newCodeInfo.ExpireAt = time.Now().Add(10 * time.Minute)
 	CodeInfo[num] = newCodeInfo
 	return fmt.Sprintf("{\"code\":\"%d\"}", CodeInfo[num].Code)

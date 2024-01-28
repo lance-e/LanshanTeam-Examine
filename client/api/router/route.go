@@ -31,6 +31,12 @@ func NewRouter() *gin.Engine {
 		user.POST("/addFriend", handle.SendFriendRequest)
 		user.POST("/acceptAddFriend", handle.ReceiveFriendRequest)
 	}
-
+	game := engine.Group("/game")
+	game.Use(middleware.JWT())
+	{
+		game.GET("/createRoom", handle.Create)
+		game.POST("/joinRoom", handle.Join)
+		game.GET("/ready", handle.Ready)
+	}
 	return engine
 }
