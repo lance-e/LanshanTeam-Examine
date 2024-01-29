@@ -31,17 +31,36 @@ func Create(c *gin.Context) {
 	}
 	//新建一个用户连接
 	user1 := ws.NewUserConn(username.(string), conn)
-	go user1.SendGameResp() //并发获取游戏响应
-
+	go user1.GameLogicResp() //并发获取游戏响应
+	go user1.MessageResp()
 	//创建房间
 	room := user1.NewRoom()
+	//for loop ，发送游戏请求
+	err = user1.GameReq(room)
 
-	go room.Start() //启动房间进程，接收两个用户之间的消息
-	select {
-	case info := <-user1.GameLogicChannel:
-		user1.Conn.WriteJSON(info)
+	if err == nil {
+		utils.ClientLogger.Info("Connection close ,game over....")
+		user1.Conn.Close()
+		room.Close()
+		user1.Close()
+		c.JSON(200, gin.H{
+			"code":    consts.GameOver,
+			"message": "game over ,游戏结束",
+			"error":   nil,
+		})
+		return
+	} else {
+		utils.ClientLogger.Info("Connection close ,these are some error that can't connect....")
+		user1.Conn.Close()
+		room.Close()
+		user1.Close()
+		c.JSON(400, gin.H{
+			"code":    consts.GameOver,
+			"message": "connection error",
+			"error":   err.Error(),
+		})
+		return
 	}
-
 }
 func Join(c *gin.Context) {
 	username, ok := c.Get("username")
@@ -68,8 +87,8 @@ func Join(c *gin.Context) {
 	}
 	//新建一个用户连接
 	user2 := ws.NewUserConn(username.(string), conn)
-	go user2.SendGameResp() //并发获取游戏响应
-
+	go user2.GameLogicResp() //并发获取游戏响应
+	go user2.MessageResp()
 	//加入目标房间
 	targetRoom, ok := ws.AllRoom.Rooms[user1]
 	if !ok {
@@ -86,9 +105,33 @@ func Join(c *gin.Context) {
 		utils.ClientLogger.Debug("can't join the room")
 	}
 	//向房间发送进入房间信息
-	targetRoom.GameLogicChannel <- &ws.GameLogic{
+	targetRoom.MessageChannel <- &ws.Message{
 		Sender:  user2,
-		Message: user2.Username + " is join this room",
+		Content: user2.Username + " is join this room",
+	}
+
+	err = user2.GameReq(targetRoom)
+
+	if err == nil {
+		utils.ClientLogger.Info("Connection close ,game over....")
+		user2.Conn.Close()
+		user2.Close()
+		c.JSON(200, gin.H{
+			"code":    consts.GameOver,
+			"message": "game over ,游戏结束",
+			"error":   nil,
+		})
+		return
+	} else {
+		utils.ClientLogger.Info("Connection close ,these are some error that can't connect....")
+		user2.Conn.Close()
+		user2.Close()
+		c.JSON(400, gin.H{
+			"code":    consts.GameOver,
+			"message": "connection error",
+			"error":   err.Error(),
+		})
+		return
 	}
 
 }

@@ -27,4 +27,5 @@ const (
 	NotFoundTargetGameRoom
 	ReadyToPlayGameFailed
 	ReadyToPlayGameSuccess
+	GameOver
 )

@@ -21,7 +21,7 @@ func GetToken(user *model.Userinfo) (string, error) {
 	claims := Mycliam{
 		Username: user.Username,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(10 * time.Minute).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour).Unix(),
 			Issuer:    "admin",
 		},
 	}

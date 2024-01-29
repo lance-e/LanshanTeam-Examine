@@ -4,6 +4,7 @@ import (
 	"LanshanTeam-Examine/client/api/router"
 	"LanshanTeam-Examine/client/pkg/utils"
 	"LanshanTeam-Examine/client/rpc/userModule"
+	"LanshanTeam-Examine/client/ws"
 	"context"
 	"net/http"
 	"os"
@@ -15,6 +16,11 @@ func init() {
 	userModule.UserRPC()
 }
 func main() {
+	//启动所有的房间协程，接收两个用户之间的消息
+	for _, v := range ws.AllRoom.Rooms {
+		go v.Start()
+	}
+
 	engine := router.NewRouter()
 	server := http.Server{
 		Addr:    "localhost:8080",
