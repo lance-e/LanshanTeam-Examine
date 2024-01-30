@@ -86,7 +86,10 @@ func Create(c *gin.Context) {
 	}
 }
 func Join(c *gin.Context) {
-
+	//+
+	user1 := c.Query("username") //!!!!!!!!!!!
+	log.Println(user1)
+	//+
 	conn, err := ws.Upgrader.Upgrade(c.Writer, c.Request, nil)
 	defer conn.Close()
 	if err != nil {
@@ -132,7 +135,7 @@ func Join(c *gin.Context) {
 		conn.WriteMessage(websocket.TextMessage, []byte("token invalid"))
 		return
 	}
-	user1 := c.PostForm("user1") //!!!!!!!!!!!
+
 	//
 	//新建一个用户连接
 	user2 := ws.NewUserConn(username.(string), conn)
