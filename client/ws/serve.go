@@ -32,7 +32,7 @@ type GameRoom struct {
 	User1            *UserConn       `json:"user_1,omitempty"`
 	User2            *UserConn       `json:"user_2,omitempty"`
 	TurnUser         *UserConn       `json:"turn_user,omitempty"`
-	ChessBoard       [15][15]int64   `json:"chess_board,omitempty"`
+	ChessBoard       [10][10]int64   `json:"chess_board,omitempty"`
 	GameLogicChannel chan *GameLogic `json:"game_logic_channel,omitempty"`
 	MessageChannel   chan *Message   `json:"message_channel,omitempty"`
 }

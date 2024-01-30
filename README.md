@@ -43,6 +43,9 @@
 
 - 全局代理
 
+4.jwt middleware会影响header，导致websocket handshake失败
+
+- 不使用jwt middleware，在连接中parse token
 ### TODO:
 
 1.调用github的api时，如何未代理，会超时断连，然后整个服务就崩掉了

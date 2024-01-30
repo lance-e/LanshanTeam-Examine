@@ -1,23 +1,19 @@
 package handle
 
 import (
+	"LanshanTeam-Examine/client/api/middleware"
 	"LanshanTeam-Examine/client/pkg/consts"
 	"LanshanTeam-Examine/client/pkg/utils"
 	"LanshanTeam-Examine/client/ws"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+	"log"
+	"net/http"
+	"strings"
+	"time"
 )
 
 func Create(c *gin.Context) {
-	username, ok := c.Get("username")
-	utils.ClientLogger.Debug("username is : " + username.(string))
-	if !ok {
-		c.JSON(400, gin.H{
-			"code":    consts.TokenInvalid,
-			"message": "token invalid",
-			"error":   "token invalid",
-		})
-		return
-	}
 	conn, err := ws.Upgrader.Upgrade(c.Writer, c.Request, nil)
 	defer conn.Close()
 	if err != nil {
@@ -29,6 +25,42 @@ func Create(c *gin.Context) {
 		})
 		return
 	}
+	//====
+	value := c.Request.Header.Get("Authorization")
+	utils.ClientLogger.Debug("TOKEN : " + value)
+	tokenstr := strings.SplitN(value, " ", 2)
+	if tokenstr[0] != "Bearer" {
+		utils.ClientLogger.Debug("JWT格式不正确")
+		conn.WriteMessage(websocket.TextMessage, []byte("JWT格式不正确"))
+		return
+	}
+	if tokenstr[1] == "" {
+		utils.ClientLogger.Debug("JWT为空")
+		conn.WriteMessage(websocket.TextMessage, []byte("JWT为空"))
+		return
+	}
+	cliam, err := middleware.ParseJWT(tokenstr[1])
+	if err != nil {
+		utils.ClientLogger.Debug("解析失败")
+		conn.WriteMessage(websocket.TextMessage, []byte("解析失败"))
+		return
+	} else if cliam.ExpiresAt < time.Now().Unix() {
+		utils.ClientLogger.Debug("token 超时")
+		conn.WriteMessage(websocket.TextMessage, []byte("token 超时"))
+		return
+	}
+	utils.ClientLogger.Debug("NAME: " + cliam.Username + " coming")
+	c.Set("username", cliam.Username)
+	//====
+	username, ok := c.Get("username")
+	log.Println(username.(string))
+	utils.ClientLogger.Debug("username is : " + username.(string))
+	if !ok {
+		utils.ClientLogger.Error("token invalid")
+		conn.WriteMessage(websocket.TextMessage, []byte("token invalid"))
+		return
+	}
+	//
 	//新建一个用户连接
 	user1 := ws.NewUserConn(username.(string), conn)
 	go user1.GameLogicResp() //并发获取游戏响应
@@ -43,37 +75,22 @@ func Create(c *gin.Context) {
 		user1.Conn.Close()
 		room.Close()
 		user1.Close()
-		c.JSON(200, gin.H{
-			"code":    consts.GameOver,
-			"message": "game over ,游戏结束",
-			"error":   nil,
-		})
+
+		utils.ClientLogger.Info("game over ,游戏结束")
+		conn.WriteMessage(websocket.TextMessage, []byte("game over ,游戏结束"))
 		return
 	} else {
 		utils.ClientLogger.Info("Connection close ,these are some error that can't connect....")
 		user1.Conn.Close()
 		room.Close()
 		user1.Close()
-		c.JSON(400, gin.H{
-			"code":    consts.GameOver,
-			"message": "connection error",
-			"error":   err.Error(),
-		})
+		utils.ClientLogger.Error("connection error")
+		conn.WriteMessage(websocket.TextMessage, []byte("connection error"))
 		return
 	}
 }
 func Join(c *gin.Context) {
-	username, ok := c.Get("username")
-	utils.ClientLogger.Debug("username is : " + username.(string))
-	if !ok {
-		c.JSON(400, gin.H{
-			"code":    consts.TokenInvalid,
-			"message": "token invalid",
-			"error":   "token invalid",
-		})
-		return
-	}
-	user1 := c.PostForm("user1")
+
 	conn, err := ws.Upgrader.Upgrade(c.Writer, c.Request, nil)
 	defer conn.Close()
 	if err != nil {
@@ -85,6 +102,45 @@ func Join(c *gin.Context) {
 		})
 		return
 	}
+
+	value := c.Request.Header.Get("Authorization")
+	utils.ClientLogger.Debug("TOKEN : " + value)
+	tokenstr := strings.SplitN(value, " ", 2)
+	if tokenstr[0] != "Bearer" {
+		utils.ClientLogger.Debug("JWT格式不正确")
+		conn.WriteMessage(websocket.TextMessage, []byte("JWT格式不正确"))
+		return
+	}
+	if tokenstr[1] == "" {
+		utils.ClientLogger.Debug("JWT为空")
+		conn.WriteMessage(websocket.TextMessage, []byte("JWT为空"))
+		return
+	}
+	cliam, err := middleware.ParseJWT(tokenstr[1])
+	if err != nil {
+		utils.ClientLogger.Debug("解析失败")
+		conn.WriteMessage(websocket.TextMessage, []byte("解析失败"))
+		return
+	} else if cliam.ExpiresAt < time.Now().Unix() {
+		utils.ClientLogger.Debug("token 超时")
+		conn.WriteMessage(websocket.TextMessage, []byte("token 超时"))
+		return
+	}
+	utils.ClientLogger.Debug("NAME: " + cliam.Username + " coming")
+	c.Set("username", cliam.Username)
+	//
+	username, ok := c.Get("username")
+	utils.ClientLogger.Debug("username is : " + username.(string))
+	if !ok {
+		c.JSON(400, gin.H{
+			"code":    consts.TokenInvalid,
+			"message": "token invalid",
+			"error":   "token invalid",
+		})
+		return
+	}
+	user1 := c.PostForm("user1")
+	//
 	//新建一个用户连接
 	user2 := ws.NewUserConn(username.(string), conn)
 	go user2.GameLogicResp() //并发获取游戏响应
@@ -163,4 +219,39 @@ func Ready(c *gin.Context) {
 		"message": "ready success",
 		"error":   nil,
 	})
+}
+func tool(ctx *gin.Context) {
+	value := ctx.Request.Header.Get("Authorization")
+	utils.ClientLogger.Debug("TOKEN : " + value)
+	tokenstr := strings.SplitN(value, " ", 2)
+	if tokenstr[0] != "Bearer" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "JWT 格式不正确",
+		})
+		ctx.Abort()
+		return
+	}
+	if tokenstr[1] == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "JWT 为空",
+		})
+		ctx.Abort()
+		return
+	}
+	cliam, err := middleware.ParseJWT(tokenstr[1])
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "解析失败",
+		})
+		ctx.Abort()
+		return
+	} else if cliam.ExpiresAt < time.Now().Unix() {
+		ctx.JSON(400, gin.H{
+			"error": "token 超时",
+		})
+		ctx.Abort()
+		return
+	}
+
+	ctx.Set("username", cliam.Username)
 }
