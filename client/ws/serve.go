@@ -8,10 +8,12 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 )
 
+// 消息格式{"sender":"lance","content":"this is message","player":"longxu","row":12,"column":13}
 var Upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return true
@@ -33,7 +35,7 @@ type GameRoom struct {
 	User1            *UserConn       `json:"user_1,omitempty"`
 	User2            *UserConn       `json:"user_2,omitempty"`
 	TurnUser         *UserConn       `json:"turn_user,omitempty"`
-	ChessBoard       [10][10]int64   `json:"chess_board,omitempty"`
+	ChessBoard       [10][11]int64   `json:"chess_board,omitempty"`
 	GameLogicChannel chan *GameLogic `json:"game_logic_channel,omitempty"`
 	MessageChannel   chan *Message   `json:"message_channel,omitempty"`
 }
@@ -166,28 +168,79 @@ func (u *UserConn) JoinRoom(g *GameRoom) (err error) {
 }
 
 func (g *GameRoom) Start() {
-
 	for {
 		select {
 		case logic := <-g.GameLogicChannel:
 			log.Println("==========> logic !!!!")
-			//不是该玩家的回合
-			if logic.Player != g.TurnUser.Username {
+			//判断用户是否准备
+			if AllUserConn.Users[logic.Player].IsReadyToPlay {
+				//不是该玩家的回合
+				if logic.Player != g.TurnUser.Username {
+					AllUserConn.Users[logic.Player].MessageChannel <- &Message{
+						Sender:  "room",
+						Content: "not your round",
+					}
+				} else {
+					//是该玩家的回合
+					if logic.Row >= 10 || logic.Row < 0 || logic.Column >= 10 || logic.Column < 0 {
+						AllUserConn.Users[logic.Player].MessageChannel <- &Message{
+							Sender:  "room",
+							Content: "bad operation ",
+						}
+					} else if g.ChessBoard[logic.Row][logic.Column] != 0 {
+						AllUserConn.Users[logic.Player].MessageChannel <- &Message{
+							Sender:  "room",
+							Content: "there was already set",
+						}
+					} else {
+						if logic.Player == g.User1.Username {
+							g.ChessBoard[logic.Row][logic.Column] = 1
+							if g.IsWin(1) {
+								utils.ClientLogger.Debug("user1 has win")
+								g.User1.MessageChannel <- &Message{
+									Sender:  "room",
+									Content: "user1 has win !!!",
+								}
+								g.User2.MessageChannel <- &Message{
+									Sender:  "room",
+									Content: "user1 has win !!!",
+								}
+								g.ChessBoard = [10][11]int64{}
+							} else {
+								g.TurnUser = g.User2
+							}
+						} else if logic.Player == g.User2.Username {
+							g.ChessBoard[logic.Row][logic.Column] = 2
+							if g.IsWin(2) {
+								utils.ClientLogger.Debug("user2 has win")
+								g.User1.MessageChannel <- &Message{
+									Sender:  "room",
+									Content: "user2 has win !!!",
+								}
+								g.User2.MessageChannel <- &Message{
+									Sender:  "room",
+									Content: "user2 has win !!!",
+								}
+								g.ChessBoard = [10][11]int64{}
+							}
+							g.TurnUser = g.User1
+						}
+					}
+				}
+			} else {
 				AllUserConn.Users[logic.Player].MessageChannel <- &Message{
 					Sender:  "room",
-					Content: "not your round",
+					Content: "you should ready for game first",
 				}
 			}
-			//是该玩家的回合
-			if logic.Player == g.User1.Username {
-				g.ChessBoard[logic.Row][logic.Column] = 1
-				g.IsWin()
-				g.TurnUser = g.User2
-
-			} else if logic.Player == g.User2.Username {
-				g.ChessBoard[logic.Row][logic.Column] = 2
-				g.IsWin()
-				g.TurnUser = g.User1
+			//每次游戏逻辑发送过来之后，房间会发送目前棋局情况
+			g.User1.MessageChannel <- &Message{
+				Sender:  "room",
+				Content: g.ShowBoard(),
+			}
+			g.User2.MessageChannel <- &Message{
+				Sender:  "room",
+				Content: g.ShowBoard(),
 			}
 
 		case msg := <-g.MessageChannel:
@@ -208,7 +261,62 @@ func (g *GameRoom) Close() {
 	defer mutex.Unlock()
 	delete(AllRoom.Rooms, g.User1.Username)
 }
-func (g *GameRoom) IsWin() bool {
+func (g *GameRoom) IsWin(value int64) bool {
 	//游戏输赢判断
+	//竖直
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 6; j++ {
+			if g.ChessBoard[i][j] == value {
+				if g.ChessBoard[i][j] == g.ChessBoard[i][j+1] && g.ChessBoard[i][j+1] == g.ChessBoard[i][j+2] &&
+					g.ChessBoard[i][j+2] == g.ChessBoard[i][j+3] && g.ChessBoard[i][j+3] == g.ChessBoard[i][j+4] {
+					return true
+				}
+			}
+		}
+	}
+	//水平
+	for i := 0; i < 6; i++ {
+		for j := 0; j < 10; j++ {
+			if g.ChessBoard[i][j] == value {
+				if g.ChessBoard[i][j] == g.ChessBoard[i+1][j] && g.ChessBoard[i+1][j] == g.ChessBoard[i+2][j] &&
+					g.ChessBoard[i+2][j] == g.ChessBoard[i+3][j] && g.ChessBoard[i+3][j] == g.ChessBoard[i+4][j] {
+					return true
+				}
+			}
+
+		}
+	}
+	//反斜
+	for i := 0; i < 6; i++ {
+		for j := 0; j < 6; j++ {
+			if g.ChessBoard[i][j] == value {
+				if g.ChessBoard[i][j] == g.ChessBoard[i+1][j+1] && g.ChessBoard[i+1][j+1] == g.ChessBoard[i+2][j+2] &&
+					g.ChessBoard[i+2][j+2] == g.ChessBoard[i+3][j+3] && g.ChessBoard[i+3][j+3] == g.ChessBoard[i+4][j+4] {
+					return true
+				}
+			}
+		}
+
+	}
+	for i := 4; i < 10; i++ {
+		for j := 0; j < 6; j++ {
+			if g.ChessBoard[i][j] == value {
+				if g.ChessBoard[i][j] == g.ChessBoard[i-1][j+1] && g.ChessBoard[i-1][j+1] == g.ChessBoard[i-2][j+2] &&
+					g.ChessBoard[i-2][j+2] == g.ChessBoard[i-3][j+3] && g.ChessBoard[i-3][j+3] == g.ChessBoard[i-4][j+4] {
+					return true
+				}
+			}
+		}
+	}
 	return false
+}
+func (g *GameRoom) ShowBoard() string {
+	var board string
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 10; j++ {
+			board += strconv.Itoa(int(g.ChessBoard[i][j]))
+		}
+		board += "  \n"
+	}
+	return board
 }
