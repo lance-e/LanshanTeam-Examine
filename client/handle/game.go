@@ -52,7 +52,6 @@ func Create(c *gin.Context) {
 	c.Set("username", cliam.Username)
 	//====
 	username, ok := c.Get("username")
-	log.Println(username.(string))
 	utils.ClientLogger.Debug("username is : " + username.(string))
 	if !ok {
 		utils.ClientLogger.Error("token invalid")
@@ -66,6 +65,7 @@ func Create(c *gin.Context) {
 	go user1.MessageResp()
 	//创建房间
 	room := user1.NewRoom()
+	go room.Start()
 	//for loop ，发送游戏请求
 	err = user1.GameReq(room)
 
@@ -135,9 +135,9 @@ func Join(c *gin.Context) {
 		conn.WriteMessage(websocket.TextMessage, []byte("token invalid"))
 		return
 	}
-
 	//
 	//新建一个用户连接
+	conn.WriteMessage(websocket.TextMessage, []byte("this is user2 conn"))
 	user2 := ws.NewUserConn(username.(string), conn)
 	go user2.GameLogicResp() //并发获取游戏响应
 	go user2.MessageResp()
@@ -154,10 +154,9 @@ func Join(c *gin.Context) {
 	}
 	//向房间发送进入房间信息
 	targetRoom.MessageChannel <- &ws.Message{
-		Sender:  user2,
+		Sender:  user2.Username,
 		Content: user2.Username + " is join this room",
 	}
-
 	err = user2.GameReq(targetRoom)
 
 	if err == nil {

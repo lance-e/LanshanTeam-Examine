@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"io"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -61,24 +62,25 @@ type AllInfo struct {
 }
 
 type Message struct {
-	Sender  *UserConn `json:"sender,omitempty"`
-	Content string    `json:"content,omitempty"`
+	Sender  string `json:"sender,omitempty"`
+	Content string `json:"content,omitempty"`
 }
 
 type GameLogic struct {
-	Player *UserConn `json:"player,omitempty"`
-	Row    int64     `json:"row,omitempty"`
-	Column int64     `json:"column,omitempty"`
+	Player string `json:"player,omitempty"`
+	Row    int64  `json:"row,omitempty"`
+	Column int64  `json:"column,omitempty"`
 }
 
 // 下棋和消息的请求
 func (u *UserConn) GameReq(g *GameRoom) error {
-	var all *AllInfo
+	var all AllInfo
 	var err error
 	for {
-		err = u.Conn.ReadJSON(all)
+		err = u.Conn.ReadJSON(&all)
 
 		if err != nil {
+			utils.ClientLogger.Error("unmarshal failed")
 			var closeErr *websocket.CloseError
 			if errors.As(err, &closeErr) {
 				return nil
@@ -86,12 +88,11 @@ func (u *UserConn) GameReq(g *GameRoom) error {
 				return nil
 			}
 			return err
-
 		}
-		if all.Sender != nil {
+		if all.Message != nil {
 			g.MessageChannel <- all.Message
 		}
-		if all.Player != nil {
+		if all.GameLogic != nil {
 			g.GameLogicChannel <- all.GameLogic
 		}
 
@@ -114,8 +115,8 @@ func (u *UserConn) MessageResp() {
 
 // 新建一个用户连接
 func NewUserConn(name string, conn *websocket.Conn) *UserConn {
-	mutex.Lock()
-	defer mutex.Unlock()
+	//mutex.Lock()
+	//defer mutex.Unlock()
 	u := &UserConn{
 		Username:         name,
 		Conn:             conn,
@@ -123,6 +124,7 @@ func NewUserConn(name string, conn *websocket.Conn) *UserConn {
 		MessageChannel:   make(chan *Message),
 	}
 	AllUserConn.Users[name] = u
+	log.Println("New Userconn : ", u)
 	return u
 }
 
@@ -134,8 +136,8 @@ func (u *UserConn) Close() {
 
 // 创建房间
 func (u *UserConn) NewRoom() *GameRoom {
-	mutex.Lock()
-	defer mutex.Unlock()
+	//mutex.Lock()
+	//defer mutex.Unlock()
 	r := &GameRoom{
 		User1:            u,
 		User2:            NewUserConn("", &websocket.Conn{}),
@@ -144,6 +146,7 @@ func (u *UserConn) NewRoom() *GameRoom {
 		MessageChannel:   make(chan *Message),
 	}
 	AllRoom.Rooms[u.Username] = r
+	log.Println("New room :", r)
 	return r
 }
 
@@ -167,35 +170,36 @@ func (g *GameRoom) Start() {
 	for {
 		select {
 		case logic := <-g.GameLogicChannel:
+			log.Println("==========> logic !!!!")
 			//不是该玩家的回合
-			if logic.Player != g.TurnUser {
-				logic.Player.MessageChannel <- &Message{
-					Sender:  nil,
+			if logic.Player != g.TurnUser.Username {
+				AllUserConn.Users[logic.Player].MessageChannel <- &Message{
+					Sender:  "room",
 					Content: "not your round",
 				}
 			}
 			//是该玩家的回合
-			if logic.Player == g.User1 {
+			if logic.Player == g.User1.Username {
 				g.ChessBoard[logic.Row][logic.Column] = 1
 				g.IsWin()
 				g.TurnUser = g.User2
 
-			} else if logic.Player == g.User2 {
+			} else if logic.Player == g.User2.Username {
 				g.ChessBoard[logic.Row][logic.Column] = 2
 				g.IsWin()
 				g.TurnUser = g.User1
 			}
 
 		case msg := <-g.MessageChannel:
+			log.Println("==============>message !!!")
 			//聊天信息
 			utils.ClientLogger.Debug("the message is :" + msg.Content)
-			if msg.Sender == g.User1 {
+			if msg.Sender == g.User1.Username {
 				g.User2.MessageChannel <- msg
 			}
-			if msg.Sender == g.User2 {
+			if msg.Sender == g.User2.Username {
 				g.User1.MessageChannel <- msg
 			}
-			utils.ClientLogger.Debug("the sender is not this room")
 		}
 	}
 }
