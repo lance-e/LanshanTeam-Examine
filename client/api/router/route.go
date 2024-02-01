@@ -30,6 +30,8 @@ func NewRouter() *gin.Engine {
 		user.GET("/information", handle.HomePage)
 		user.POST("/addFriend", handle.SendFriendRequest)
 		user.POST("/acceptAddFriend", handle.ReceiveFriendRequest)
+
+		user.GET("/rank", handle.ShowRank)
 	}
 	game := engine.Group("/game")
 	{

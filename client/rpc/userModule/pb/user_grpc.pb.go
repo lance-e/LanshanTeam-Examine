@@ -23,6 +23,8 @@ const (
 	User_Login_FullMethodName     = "/User/Login"
 	User_HomePage_FullMethodName  = "/User/HomePage"
 	User_AddFriend_FullMethodName = "/User/AddFriend"
+	User_AddScore_FullMethodName  = "/User/AddScore"
+	User_Rank_FullMethodName      = "/User/Rank"
 )
 
 // UserClient is the client API for User service.
@@ -33,6 +35,8 @@ type UserClient interface {
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 	HomePage(ctx context.Context, in *HomePageReq, opts ...grpc.CallOption) (*HomePageResp, error)
 	AddFriend(ctx context.Context, in *AddFriendReq, opts ...grpc.CallOption) (*AddFriendResp, error)
+	AddScore(ctx context.Context, in *AddScoreReq, opts ...grpc.CallOption) (*AddScoreResp, error)
+	Rank(ctx context.Context, in *RankReq, opts ...grpc.CallOption) (*RankResp, error)
 }
 
 type userClient struct {
@@ -79,6 +83,24 @@ func (c *userClient) AddFriend(ctx context.Context, in *AddFriendReq, opts ...gr
 	return out, nil
 }
 
+func (c *userClient) AddScore(ctx context.Context, in *AddScoreReq, opts ...grpc.CallOption) (*AddScoreResp, error) {
+	out := new(AddScoreResp)
+	err := c.cc.Invoke(ctx, User_AddScore_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) Rank(ctx context.Context, in *RankReq, opts ...grpc.CallOption) (*RankResp, error) {
+	out := new(RankResp)
+	err := c.cc.Invoke(ctx, User_Rank_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -87,6 +109,8 @@ type UserServer interface {
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	HomePage(context.Context, *HomePageReq) (*HomePageResp, error)
 	AddFriend(context.Context, *AddFriendReq) (*AddFriendResp, error)
+	AddScore(context.Context, *AddScoreReq) (*AddScoreResp, error)
+	Rank(context.Context, *RankReq) (*RankResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -105,6 +129,12 @@ func (UnimplementedUserServer) HomePage(context.Context, *HomePageReq) (*HomePag
 }
 func (UnimplementedUserServer) AddFriend(context.Context, *AddFriendReq) (*AddFriendResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddFriend not implemented")
+}
+func (UnimplementedUserServer) AddScore(context.Context, *AddScoreReq) (*AddScoreResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddScore not implemented")
+}
+func (UnimplementedUserServer) Rank(context.Context, *RankReq) (*RankResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Rank not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -191,6 +221,42 @@ func _User_AddFriend_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_AddScore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddScoreReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AddScore(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_AddScore_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AddScore(ctx, req.(*AddScoreReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_Rank_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RankReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).Rank(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_Rank_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).Rank(ctx, req.(*RankReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +279,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddFriend",
 			Handler:    _User_AddFriend_Handler,
+		},
+		{
+			MethodName: "AddScore",
+			Handler:    _User_AddScore_Handler,
+		},
+		{
+			MethodName: "Rank",
+			Handler:    _User_Rank_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

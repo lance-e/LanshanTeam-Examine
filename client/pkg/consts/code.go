@@ -26,4 +26,5 @@ const (
 	ReadyToPlayGameFailed
 	ReadyToPlayGameSuccess
 	ShowHistorySuccess
+	GetRankSuccess
 )

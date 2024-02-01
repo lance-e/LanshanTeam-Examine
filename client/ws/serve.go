@@ -4,6 +4,8 @@ import (
 	"LanshanTeam-Examine/client/pkg/utils"
 	"LanshanTeam-Examine/client/rpc/gameModule"
 	"LanshanTeam-Examine/client/rpc/gameModule/pb"
+	"LanshanTeam-Examine/client/rpc/userModule"
+	pb2 "LanshanTeam-Examine/client/rpc/userModule/pb"
 	"context"
 	"errors"
 	"fmt"
@@ -211,13 +213,15 @@ func (g *GameRoom) Start() {
 								utils.ClientLogger.Debug("user1 has win")
 								g.User1.MessageChannel <- &Message{
 									Sender:  "room",
-									Content: "user1 has win !!!",
+									Content: logic.Player + " has win !!!",
 								}
 								g.User2.MessageChannel <- &Message{
 									Sender:  "room",
-									Content: "user1 has win !!!",
+									Content: logic.Player + " has win !!!",
 								}
 								g.ChessBoard = [10][11]int64{}
+								addScore(logic.Player)
+
 							} else {
 								g.TurnUser = g.User2
 							}
@@ -236,13 +240,14 @@ func (g *GameRoom) Start() {
 								utils.ClientLogger.Debug("user2 has win")
 								g.User1.MessageChannel <- &Message{
 									Sender:  "room",
-									Content: "user2 has win !!!",
+									Content: logic.Player + " has win !!!",
 								}
 								g.User2.MessageChannel <- &Message{
 									Sender:  "room",
-									Content: "user2 has win !!!",
+									Content: logic.Player + "user2 has win !!!",
 								}
 								g.ChessBoard = [10][11]int64{}
+								addScore(logic.Player)
 							}
 							g.TurnUser = g.User1
 						}
@@ -339,4 +344,23 @@ func (g *GameRoom) ShowBoard() string {
 		board += "  \n"
 	}
 	return board
+}
+func addScore(username string) {
+	if username[(len(username)-8):] != "(github)" {
+		_, err := userModule.UserClient.AddScore(context.Background(), &pb2.AddScoreReq{
+			Username:     username,
+			IsGithubName: false,
+		})
+		if err != nil {
+			utils.ClientLogger.Debug("addScore rpc request failed,error:" + err.Error())
+		}
+	} else {
+		_, err := userModule.UserClient.AddScore(context.Background(), &pb2.AddScoreReq{
+			Username:     username,
+			IsGithubName: false,
+		})
+		if err != nil {
+			utils.ClientLogger.Debug("addScore rpc request failed,error:" + err.Error())
+		}
+	}
 }

@@ -48,8 +48,18 @@ func (u *UserInfo) Create() error {
 	}
 	return nil
 }
-func (u *UserInfo) Update() {
-
+func (u *UserInfo) AddScore() error {
+	err := u.Get("username", u.Username, u)
+	if err != nil {
+		utils.UserLogger.Error("can't get this user's information")
+		return err
+	}
+	err = DB.Model(&UserInfo{}).Where("username = ?", u.Username).Update("score", u.Score+5).Error
+	if err != nil {
+		utils.UserLogger.Debug("can't add score")
+		return err
+	}
+	return nil
 }
 func (u *UserInfo) Delete() {
 

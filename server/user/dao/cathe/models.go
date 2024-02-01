@@ -50,3 +50,19 @@ func SetExpireTime(ctx context.Context, key string) {
 		return
 	}
 }
+func (b *UserInfoInCathe) UpdateRank(ctx context.Context) error {
+	err := RedisClient.ZAdd(ctx, "rank", redis.Z{Score: float64(b.Score), Member: b.Username}).Err()
+	if err != nil {
+		utils.UserLogger.Error("redis error ZADD:" + err.Error())
+		return err
+	}
+	return nil
+}
+func GetRank(ctx context.Context) ([]redis.Z, error) {
+	result, err := RedisClient.ZRevRangeWithScores(ctx, "rank", 0, 9).Result()
+	if err != nil {
+		utils.UserLogger.Error("redis error Zrevrange:" + err.Error())
+		return nil, err
+	}
+	return result, nil
+}

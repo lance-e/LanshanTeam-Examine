@@ -508,6 +508,256 @@ func (x *AddFriendResp) GetFlag() bool {
 	return false
 }
 
+type AddScoreReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Username     string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	IsGithubName bool   `protobuf:"varint,2,opt,name=isGithubName,proto3" json:"isGithubName,omitempty"`
+}
+
+func (x *AddScoreReq) Reset() {
+	*x = AddScoreReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddScoreReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddScoreReq) ProtoMessage() {}
+
+func (x *AddScoreReq) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddScoreReq.ProtoReflect.Descriptor instead.
+func (*AddScoreReq) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *AddScoreReq) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *AddScoreReq) GetIsGithubName() bool {
+	if x != nil {
+		return x.IsGithubName
+	}
+	return false
+}
+
+type AddScoreResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *AddScoreResp) Reset() {
+	*x = AddScoreResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddScoreResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddScoreResp) ProtoMessage() {}
+
+func (x *AddScoreResp) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddScoreResp.ProtoReflect.Descriptor instead.
+func (*AddScoreResp) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *AddScoreResp) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type RankReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RankReq) Reset() {
+	*x = RankReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RankReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RankReq) ProtoMessage() {}
+
+func (x *RankReq) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RankReq.ProtoReflect.Descriptor instead.
+func (*RankReq) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{10}
+}
+
+type RankResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Rank    []*Rank `protobuf:"bytes,1,rep,name=rank,proto3" json:"rank,omitempty"`
+	Message string  `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *RankResp) Reset() {
+	*x = RankResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RankResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RankResp) ProtoMessage() {}
+
+func (x *RankResp) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RankResp.ProtoReflect.Descriptor instead.
+func (*RankResp) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *RankResp) GetRank() []*Rank {
+	if x != nil {
+		return x.Rank
+	}
+	return nil
+}
+
+func (x *RankResp) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type Rank struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	Score    int64  `protobuf:"varint,2,opt,name=score,proto3" json:"score,omitempty"`
+}
+
+func (x *Rank) Reset() {
+	*x = Rank{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Rank) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Rank) ProtoMessage() {}
+
+func (x *Rank) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Rank.ProtoReflect.Descriptor instead.
+func (*Rank) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *Rank) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Rank) GetScore() int64 {
+	if x != nil {
+		return x.Score
+	}
+	return 0
+}
+
 var File_user_proto protoreflect.FileDescriptor
 
 var file_user_proto_rawDesc = []byte{
@@ -556,18 +806,38 @@ var file_user_proto_rawDesc = []byte{
 	0x08, 0x52, 0x09, 0x69, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x23, 0x0a, 0x0d,
 	0x41, 0x64, 0x64, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x12, 0x0a,
 	0x04, 0x66, 0x6c, 0x61, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x04, 0x66, 0x6c, 0x61,
-	0x67, 0x32, 0xa4, 0x01, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x27, 0x0a, 0x08, 0x52, 0x65,
-	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x0c, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65,
-	0x72, 0x52, 0x65, 0x71, 0x1a, 0x0d, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52,
-	0x65, 0x73, 0x70, 0x12, 0x1e, 0x0a, 0x05, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x09, 0x2e, 0x4c,
-	0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x0a, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
-	0x65, 0x73, 0x70, 0x12, 0x27, 0x0a, 0x08, 0x48, 0x6f, 0x6d, 0x65, 0x50, 0x61, 0x67, 0x65, 0x12,
-	0x0c, 0x2e, 0x48, 0x6f, 0x6d, 0x65, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x0d, 0x2e,
-	0x48, 0x6f, 0x6d, 0x65, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2a, 0x0a, 0x09,
-	0x41, 0x64, 0x64, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x12, 0x0d, 0x2e, 0x41, 0x64, 0x64, 0x46,
-	0x72, 0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x1a, 0x0e, 0x2e, 0x41, 0x64, 0x64, 0x46, 0x72,
-	0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x42, 0x06, 0x5a, 0x04, 0x2e, 0x3b, 0x70, 0x62,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x67, 0x22, 0x4d, 0x0a, 0x0b, 0x41, 0x64, 0x64, 0x53, 0x63, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x71,
+	0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x22, 0x0a, 0x0c,
+	0x69, 0x73, 0x47, 0x69, 0x74, 0x68, 0x75, 0x62, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x0c, 0x69, 0x73, 0x47, 0x69, 0x74, 0x68, 0x75, 0x62, 0x4e, 0x61, 0x6d, 0x65,
+	0x22, 0x28, 0x0a, 0x0c, 0x41, 0x64, 0x64, 0x53, 0x63, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x09, 0x0a, 0x07, 0x52, 0x61,
+	0x6e, 0x6b, 0x52, 0x65, 0x71, 0x22, 0x3f, 0x0a, 0x08, 0x52, 0x61, 0x6e, 0x6b, 0x52, 0x65, 0x73,
+	0x70, 0x12, 0x19, 0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x05, 0x2e, 0x52, 0x61, 0x6e, 0x6b, 0x52, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x12, 0x18, 0x0a, 0x07,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x38, 0x0a, 0x04, 0x52, 0x61, 0x6e, 0x6b, 0x12, 0x1a,
+	0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x63,
+	0x6f, 0x72, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x73, 0x63, 0x6f, 0x72, 0x65,
+	0x32, 0xea, 0x01, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x27, 0x0a, 0x08, 0x52, 0x65, 0x67,
+	0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x0c, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72,
+	0x52, 0x65, 0x71, 0x1a, 0x0d, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65,
+	0x73, 0x70, 0x12, 0x1e, 0x0a, 0x05, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x09, 0x2e, 0x4c, 0x6f,
+	0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x1a, 0x0a, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65,
+	0x73, 0x70, 0x12, 0x27, 0x0a, 0x08, 0x48, 0x6f, 0x6d, 0x65, 0x50, 0x61, 0x67, 0x65, 0x12, 0x0c,
+	0x2e, 0x48, 0x6f, 0x6d, 0x65, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x0d, 0x2e, 0x48,
+	0x6f, 0x6d, 0x65, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2a, 0x0a, 0x09, 0x41,
+	0x64, 0x64, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x12, 0x0d, 0x2e, 0x41, 0x64, 0x64, 0x46, 0x72,
+	0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x1a, 0x0e, 0x2e, 0x41, 0x64, 0x64, 0x46, 0x72, 0x69,
+	0x65, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x27, 0x0a, 0x08, 0x41, 0x64, 0x64, 0x53, 0x63,
+	0x6f, 0x72, 0x65, 0x12, 0x0c, 0x2e, 0x41, 0x64, 0x64, 0x53, 0x63, 0x6f, 0x72, 0x65, 0x52, 0x65,
+	0x71, 0x1a, 0x0d, 0x2e, 0x41, 0x64, 0x64, 0x53, 0x63, 0x6f, 0x72, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x12, 0x1b, 0x0a, 0x04, 0x52, 0x61, 0x6e, 0x6b, 0x12, 0x08, 0x2e, 0x52, 0x61, 0x6e, 0x6b, 0x52,
+	0x65, 0x71, 0x1a, 0x09, 0x2e, 0x52, 0x61, 0x6e, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x42, 0x06, 0x5a,
+	0x04, 0x2e, 0x3b, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -582,7 +852,7 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_user_proto_goTypes = []interface{}{
 	(*RegisterReq)(nil),   // 0: RegisterReq
 	(*RegisterResp)(nil),  // 1: RegisterResp
@@ -592,21 +862,31 @@ var file_user_proto_goTypes = []interface{}{
 	(*HomePageResp)(nil),  // 5: HomePageResp
 	(*AddFriendReq)(nil),  // 6: AddFriendReq
 	(*AddFriendResp)(nil), // 7: AddFriendResp
+	(*AddScoreReq)(nil),   // 8: AddScoreReq
+	(*AddScoreResp)(nil),  // 9: AddScoreResp
+	(*RankReq)(nil),       // 10: RankReq
+	(*RankResp)(nil),      // 11: RankResp
+	(*Rank)(nil),          // 12: Rank
 }
 var file_user_proto_depIdxs = []int32{
-	0, // 0: User.Register:input_type -> RegisterReq
-	2, // 1: User.Login:input_type -> LoginReq
-	4, // 2: User.HomePage:input_type -> HomePageReq
-	6, // 3: User.AddFriend:input_type -> AddFriendReq
-	1, // 4: User.Register:output_type -> RegisterResp
-	3, // 5: User.Login:output_type -> LoginResp
-	5, // 6: User.HomePage:output_type -> HomePageResp
-	7, // 7: User.AddFriend:output_type -> AddFriendResp
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	12, // 0: RankResp.rank:type_name -> Rank
+	0,  // 1: User.Register:input_type -> RegisterReq
+	2,  // 2: User.Login:input_type -> LoginReq
+	4,  // 3: User.HomePage:input_type -> HomePageReq
+	6,  // 4: User.AddFriend:input_type -> AddFriendReq
+	8,  // 5: User.AddScore:input_type -> AddScoreReq
+	10, // 6: User.Rank:input_type -> RankReq
+	1,  // 7: User.Register:output_type -> RegisterResp
+	3,  // 8: User.Login:output_type -> LoginResp
+	5,  // 9: User.HomePage:output_type -> HomePageResp
+	7,  // 10: User.AddFriend:output_type -> AddFriendResp
+	9,  // 11: User.AddScore:output_type -> AddScoreResp
+	11, // 12: User.Rank:output_type -> RankResp
+	7,  // [7:13] is the sub-list for method output_type
+	1,  // [1:7] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
@@ -711,6 +991,66 @@ func file_user_proto_init() {
 				return nil
 			}
 		}
+		file_user_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddScoreReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddScoreResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RankReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RankResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Rank); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -718,7 +1058,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
