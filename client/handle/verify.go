@@ -24,7 +24,7 @@ var CodeInfo = make(map[string]model.CodeInfo)
 var aliyun model.Config
 
 func SendCode(c *gin.Context) {
-	viper.SetConfigFile("./config/config.yaml")
+	viper.SetConfigFile("./config/gameConfig.yaml")
 	err := viper.ReadInConfig()
 	if err != nil {
 		utils.ClientLogger.Error("sent code can't read in config file , ERROR:" + err.Error())

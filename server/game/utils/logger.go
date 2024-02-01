@@ -7,12 +7,12 @@ import (
 	"os"
 )
 
-var ClientLogger *zap.Logger
+var GameLogger *zap.Logger
 
 func init() {
 	//配置输出文件
 	fileWriter := zapcore.AddSync(&lumberjack.Logger{
-		Filename:   "./client.log",
+		Filename:   "./gameModule.log",
 		MaxSize:    10,
 		MaxAge:     10,
 		MaxBackups: 10,
@@ -32,5 +32,5 @@ func init() {
 		level,
 	)
 
-	ClientLogger = zap.New(core)
+	GameLogger = zap.New(core)
 }

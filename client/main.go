@@ -3,6 +3,7 @@ package main
 import (
 	"LanshanTeam-Examine/client/api/router"
 	"LanshanTeam-Examine/client/pkg/utils"
+	"LanshanTeam-Examine/client/rpc/gameModule"
 	"LanshanTeam-Examine/client/rpc/userModule"
 	"context"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 
 func init() {
 	userModule.UserRPC()
+	gameModule.GameRPC()
 }
 func main() {
 

@@ -37,6 +37,7 @@ func NewRouter() *gin.Engine {
 		game.GET("/joinRoom", handle.Join)
 		game.Use(middleware.JWT())
 		game.GET("/ready", handle.Ready)
+		game.POST("/showHistory", handle.ShowHistory)
 	}
 	return engine
 }

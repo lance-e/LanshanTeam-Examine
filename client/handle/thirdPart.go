@@ -29,7 +29,7 @@ var github model.Config
 
 func GithubRegisterAndLogin(c *gin.Context) {
 
-	viper.SetConfigFile("./config/config.yaml")
+	viper.SetConfigFile("./config/gameConfig.yaml")
 	err := viper.ReadInConfig()
 	if err != nil {
 		utils.ClientLogger.Error("GithubRegisterAndLogin can't read in config file , ERROR:" + err.Error())

@@ -2,6 +2,9 @@ package ws
 
 import (
 	"LanshanTeam-Examine/client/pkg/utils"
+	"LanshanTeam-Examine/client/rpc/gameModule"
+	"LanshanTeam-Examine/client/rpc/gameModule/pb"
+	"context"
 	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
@@ -195,6 +198,15 @@ func (g *GameRoom) Start() {
 					} else {
 						if logic.Player == g.User1.Username {
 							g.ChessBoard[logic.Row][logic.Column] = 1
+							_, err := gameModule.GameClient.Save(context.Background(), &pb.SaveReq{
+								RoomHost: g.User1.Username,
+								Player:   logic.Player,
+								Row:      logic.Row,
+								Column:   logic.Column,
+							})
+							if err != nil {
+								utils.ClientLogger.Debug("can't save the step,error:" + err.Error())
+							}
 							if g.IsWin(1) {
 								utils.ClientLogger.Debug("user1 has win")
 								g.User1.MessageChannel <- &Message{
@@ -211,6 +223,15 @@ func (g *GameRoom) Start() {
 							}
 						} else if logic.Player == g.User2.Username {
 							g.ChessBoard[logic.Row][logic.Column] = 2
+							_, err := gameModule.GameClient.Save(context.Background(), &pb.SaveReq{
+								RoomHost: g.User1.Username,
+								Player:   logic.Player,
+								Row:      logic.Row,
+								Column:   logic.Column,
+							})
+							if err != nil {
+								utils.ClientLogger.Debug("can't save the step,error:" + err.Error())
+							}
 							if g.IsWin(2) {
 								utils.ClientLogger.Debug("user2 has win")
 								g.User1.MessageChannel <- &Message{
@@ -283,7 +304,6 @@ func (g *GameRoom) IsWin(value int64) bool {
 					return true
 				}
 			}
-
 		}
 	}
 	//反斜

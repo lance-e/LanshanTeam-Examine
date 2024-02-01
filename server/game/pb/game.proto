@@ -1,0 +1,29 @@
+syntax="proto3";
+
+option go_package=".;pb";
+
+message SaveReq {
+  string RoomHost=1;
+  string Player =2;
+  int64 Row =3;
+  int64 Column =4;
+}
+message SaveResp{
+  string message=1;
+}
+message ShowStepsReq{
+  string RoomHost=1;
+}
+message Step{
+  string RoomHost=1;
+  string Player =2;
+  int64 Row =3;
+  int64 Column =4;
+}
+message ShowStepsReps{
+  repeated Step AllStep =1;
+}
+service Game{
+  rpc Save(SaveReq)returns (SaveResp);
+  rpc ShowSteps(ShowStepsReq)returns(ShowStepsReps);
+}
