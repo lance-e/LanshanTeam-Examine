@@ -1,9 +1,10 @@
 package Init
 
 import (
+	"LanshanTeam-Examine/server/game/dao/cathe"
 	"LanshanTeam-Examine/server/game/dao/db"
-	"LanshanTeam-Examine/server/user/dao/cathe"
-	"LanshanTeam-Examine/server/user/pkg/utils"
+	"LanshanTeam-Examine/server/game/utils"
+
 	"context"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
@@ -40,11 +41,11 @@ func readConfig() {
 	viper.SetConfigFile("./config/gameConfig.yaml")
 	err = viper.ReadInConfig()
 	if err != nil {
-		utils.UserLogger.Panic("read the mysql config file failed")
+		utils.GameLogger.Panic("read the mysql config file failed")
 	}
 	err = viper.Unmarshal(&info)
 	if err != nil {
-		utils.UserLogger.Panic(err.Error())
+		utils.GameLogger.Panic(err.Error())
 	}
 }
 
@@ -54,13 +55,13 @@ func InitMysql() {
 		":", info.DbInfo.Port, ")/", info.DbInfo.Dbname, "?charset=utf8mb4&parseTime=True&loc=Local"}, "")
 	db.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		utils.UserLogger.Panic("couldn't open mysql")
+		utils.GameLogger.Panic("couldn't open mysql")
 	}
 	err = db.Migrate()
 	if err != nil {
-		utils.UserLogger.Panic("migrate failed" + err.Error())
+		utils.GameLogger.Panic("migrate failed" + err.Error())
 	}
-	utils.UserLogger.Info("launch mysql successful")
+	utils.GameLogger.Info("launch mysql successful")
 }
 func InitRedis() {
 	readConfig()
@@ -71,11 +72,11 @@ func InitRedis() {
 	})
 	resp, err := cathe.RedisClient.Ping(context.Background()).Result()
 	if err != nil {
-		utils.UserLogger.Panic(err.Error())
+		utils.GameLogger.Panic(err.Error())
 	}
 	if resp != "PONG" {
-		utils.UserLogger.Error("ERROR:" + err.Error())
+		utils.GameLogger.Error("ERROR:" + err.Error())
 		return
 	}
-	utils.UserLogger.Info("launch redis success")
+	utils.GameLogger.Info("launch redis success")
 }

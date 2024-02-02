@@ -29,7 +29,7 @@ var github model.Config
 
 func GithubRegisterAndLogin(c *gin.Context) {
 
-	viper.SetConfigFile("./config/gameConfig.yaml")
+	viper.SetConfigFile("./config/config.yaml")
 	err := viper.ReadInConfig()
 	if err != nil {
 		utils.ClientLogger.Error("GithubRegisterAndLogin can't read in config file , ERROR:" + err.Error())
@@ -57,6 +57,16 @@ func GithubRegisterAndLogin(c *gin.Context) {
 	c.Redirect(307, "https://github.com/login/oauth/authorize?client_id="+github.ClientId+"&redirect_url="+callback+"&scope=user&state=random")
 }
 func GithubCallback(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(400, gin.H{
+				"code":    consts.ServeUnavailable,
+				"message": "github login serve unavailable",
+				"error":   err.(string),
+			})
+			return
+		}
+	}()
 
 	var info = Info
 	code := c.Query("code")

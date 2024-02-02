@@ -1,9 +1,9 @@
 package handle
 
 import (
-	"LanshanTeam-Examine/client/rpc/userModule/pb"
 	"LanshanTeam-Examine/server/user/dao/cathe"
 	"LanshanTeam-Examine/server/user/dao/db"
+	"LanshanTeam-Examine/server/user/pb"
 	"LanshanTeam-Examine/server/user/pkg/utils"
 	"context"
 )
@@ -37,9 +37,9 @@ func (U *UserServer) AddScore(ctx context.Context, req *pb.AddScoreReq) (*pb.Add
 func (U *UserServer) Rank(ctx context.Context, req *pb.RankReq) (*pb.RankResp, error) {
 	var rank []*pb.Rank
 	result, err := cathe.GetRank(ctx)
-	if err != nil {
+	if err != nil || len(result) == 0 {
 		utils.UserLogger.Debug("cathe had not anything about rank ")
-		if err := GetAll(ctx); err != nil {
+		if err := MigrateIntoCathe(ctx); err != nil {
 			utils.UserLogger.Error("can't migrate all information into redis")
 			return &pb.RankResp{
 				Rank:    nil,
@@ -67,7 +67,7 @@ func (U *UserServer) Rank(ctx context.Context, req *pb.RankReq) (*pb.RankResp, e
 	}, nil
 }
 
-func GetAll(ctx context.Context) error {
+func MigrateIntoCathe(ctx context.Context) error {
 	var infos []cathe.UserInfoInCathe
 	err := db.DB.Model(&db.UserInfo{}).Select("username", "score").Find(&infos).Error
 	if err != nil {

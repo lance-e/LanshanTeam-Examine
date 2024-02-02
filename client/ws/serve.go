@@ -346,21 +346,25 @@ func (g *GameRoom) ShowBoard() string {
 	return board
 }
 func addScore(username string) {
-	if username[(len(username)-8):] != "(github)" {
-		_, err := userModule.UserClient.AddScore(context.Background(), &pb2.AddScoreReq{
-			Username:     username,
-			IsGithubName: false,
-		})
-		if err != nil {
-			utils.ClientLogger.Debug("addScore rpc request failed,error:" + err.Error())
-		}
-	} else {
-		_, err := userModule.UserClient.AddScore(context.Background(), &pb2.AddScoreReq{
-			Username:     username,
-			IsGithubName: false,
-		})
-		if err != nil {
-			utils.ClientLogger.Debug("addScore rpc request failed,error:" + err.Error())
+	if len(username) > 8 {
+		if username[(len(username)-8):] != "(github)" {
+			_, err := userModule.UserClient.AddScore(context.Background(), &pb2.AddScoreReq{
+				Username:     username,
+				IsGithubName: false,
+			})
+			if err != nil {
+				utils.ClientLogger.Debug("addScore rpc request failed,error:" + err.Error())
+			}
+			return
 		}
 	}
+
+	_, err := userModule.UserClient.AddScore(context.Background(), &pb2.AddScoreReq{
+		Username:     username,
+		IsGithubName: false,
+	})
+	if err != nil {
+		utils.ClientLogger.Debug("addScore rpc request failed,error:" + err.Error())
+	}
+
 }

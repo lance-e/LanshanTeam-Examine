@@ -56,6 +56,7 @@ func (b *UserInfoInCathe) UpdateRank(ctx context.Context) error {
 		utils.UserLogger.Error("redis error ZADD:" + err.Error())
 		return err
 	}
+	utils.UserLogger.Debug("update rank success")
 	return nil
 }
 func GetRank(ctx context.Context) ([]redis.Z, error) {
@@ -64,5 +65,6 @@ func GetRank(ctx context.Context) ([]redis.Z, error) {
 		utils.UserLogger.Error("redis error Zrevrange:" + err.Error())
 		return nil, err
 	}
+	utils.UserLogger.Debug("Zrevrange success")
 	return result, nil
 }

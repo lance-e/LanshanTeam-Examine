@@ -160,7 +160,7 @@ func Join(c *gin.Context) {
 	err = user2.GameReq(targetRoom)
 
 	if err == nil {
-		utils.ClientLogger.Info("Connection close ,game over....")
+		utils.ClientLogger.Info("Connection close ....")
 		user2.Conn.Close()
 		user2.Close()
 		conn.WriteMessage(websocket.TextMessage, []byte("game over ,游戏结束"))
@@ -197,7 +197,7 @@ func Ready(c *gin.Context) {
 	}
 	targetUser.IsReadyToPlay = true
 	utils.ClientLogger.Debug("ready success")
-	c.JSON(400, gin.H{
+	c.JSON(200, gin.H{
 		"code":    consts.ReadyToPlayGameSuccess,
 		"message": "ready success",
 		"error":   nil,

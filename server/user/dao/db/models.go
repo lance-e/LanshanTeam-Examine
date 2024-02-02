@@ -3,6 +3,7 @@ package db
 import (
 	"LanshanTeam-Examine/server/user/pkg/utils"
 	"gorm.io/gorm"
+	"log"
 )
 
 type UserInfo struct {
@@ -49,16 +50,19 @@ func (u *UserInfo) Create() error {
 	return nil
 }
 func (u *UserInfo) AddScore() error {
+	log.Println("first:", *u)
 	err := u.Get("username", u.Username, u)
 	if err != nil {
 		utils.UserLogger.Error("can't get this user's information")
 		return err
 	}
+	log.Println("second", *u)
 	err = DB.Model(&UserInfo{}).Where("username = ?", u.Username).Update("score", u.Score+5).Error
 	if err != nil {
 		utils.UserLogger.Debug("can't add score")
 		return err
 	}
+	log.Println("third", *u)
 	return nil
 }
 func (u *UserInfo) Delete() {
