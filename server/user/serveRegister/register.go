@@ -3,7 +3,7 @@ package serveRegister
 import (
 	"LanshanTeam-Examine/server/user/pkg/utils"
 	"context"
-	clientv3 "go.etcd.io/etcd/client/v3"
+	clientv3 "go.etcd.io/etcd/caller/v3"
 	"time"
 )
 

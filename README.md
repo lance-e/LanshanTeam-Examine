@@ -25,31 +25,29 @@
 * [ ]  将项目部署上线（包括前端和后端的项目，也就是登录你的网站能够像正常的网站一样访问）
 * [ ]  使用 https 加密
 * [X]  合理的缓存策略（提高访问速度）
-* [ ]  考虑服务端安全性（xxs，sql注入，cors，csrf 等）
+* [X]  考虑服务端安全性（xxs，sql注入，cors，csrf 等）
 * [ ]  实现游戏性能的优化：容纳更多人同时在线、降低对局延迟等等，如果可以做测试进行优化前后对比就更好了
 * [ ]  其他任何你想加的让我们耳目一新的功能...
 
-### 问题
+### tech stack
 
-1.当调用rpc服务时，出现error reading server preface: http2: frame too large
+web framework:gin
 
-- 服务端换端口
+rpc framework:grp
 
-2.多个服务之间有依赖时，如何保证服务之间的解耦
+crelational database:mysql
 
-3.使用github OAuth2.0第三方登陆时，调用获取token api时超时无法连接
+none-relational database:redis
 
-- 全局代理
+service register and discovery:etcd
 
-4.jwt middleware会影响header，导致websocket handshake失败
+deployment:docker
 
-- 不使用jwt middleware，在连接中parse token
+configuration:viper
 
-5.代码极其ugly
+logger:zap
 
-- 有空重构
-### TODO:
+### structure
 
-1.调用github的api时，如果未代理，会超时断连，然后整个服务就崩掉了
 
-2.服务注册发现
+![structures.png](assets/structures.png)
