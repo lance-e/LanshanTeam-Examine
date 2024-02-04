@@ -39,93 +39,16 @@ services:
       - "6379:6379"
     volumes:
       - ./redis-user-data:/data
-#  etcd1:
-#    image: "bitnami/etcd:latest"
-#    container_name: "etcd1"
-#    restart: "always"
-#    ports:
-#      - "30000:2379"
-#      - "30001:2380"
-#    platform: linux/amd64
-#    environment:
-#      - TZ=Asia/Shanghai
-#      # 允许无认证访问
-#      - ALLOW_NONE_AUTHENTICATION=yes
-#      # 名称
-#      - ETCD_NAME=etcd1
-#      # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
-#      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd1:2380
-#      # 用于监听伙伴通讯的URL列表
-#      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
-#      # 用于监听客户端通讯的URL列表
-#      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-#      # 初始化集群记号，建议一个集群内的所有节点都设置唯一的token
-#      - ETCD_INITIAL_CLUSTER_TOKEN=MyEtcd
-#      # 列出这个成员的客户端URL，通告给集群中的其他成员
-#      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd1:2379
-#      # 集群配置，格式是ETCD_NAME=ETCD_INITIAL_ADVERTISE_PEER_URLS
-#      - ETCD_INITIAL_CLUSTER=etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
-#      # 初始化集群状态，这里写 new 就行
-#      - ETCD_INITIAL_CLUSTER_STATE=new
-#    volumes:
-#      - ./data/etcd1:/bitnami/etcd
-#  etcd2:
-#      image: "bitnami/etcd:latest"
-#      container_name: "etcd2"
-#      restart: "always"
-#      ports:
-#        - "30002:2379"
-#        - "30003:2380"
-#      platform: linux/amd64
-#      environment:
-#        - TZ=Asia/Shanghai
-#        # 允许无认证访问
-#        - ALLOW_NONE_AUTHENTICATION=yes
-#        # 名称
-#        - ETCD_NAME=etcd2
-#        # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
-#        - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd2:2380
-#        # 用于监听伙伴通讯的URL列表
-#        - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
-#        # 用于监听客户端通讯的URL列表
-#        - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-#        # 初始化集群记号，建议一个集群内的所有节点都设置唯一的token
-#        - ETCD_INITIAL_CLUSTER_TOKEN=MyEtcd
-#        # 列出这个成员的客户端URL，通告给集群中的其他成员
-#        - ETCD_ADVERTISE_CLIENT_URLS=http://etcd2:2379
-#        # 集群配置，格式是ETCD_NAME=ETCD_INITIAL_ADVERTISE_PEER_URLS
-#        - ETCD_INITIAL_CLUSTER=etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
-#        # 初始化集群状态，这里写 new 就行
-#        - ETCD_INITIAL_CLUSTER_STATE=new
-#      volumes:
-#        - ./data/etcd2:/bitnami/etcd
-#  etcd3:
-#      image: "bitnami/etcd:latest"
-#      container_name: "etcd3"
-#      restart: "always"
-#      ports:
-#        - "30004:2379"
-#        - "30005:2380"
-#      platform: linux/amd64
-#      environment:
-#        - TZ=Asia/Shanghai
-#        # 允许无认证访问
-#        - ALLOW_NONE_AUTHENTICATION=yes
-#        # 名称
-#        - ETCD_NAME=etcd3
-#        # 列出这个成员的伙伴 URL 以便通告给集群的其他成员
-#        - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd3:2380
-#        # 用于监听伙伴通讯的URL列表
-#        - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
-#        # 用于监听客户端通讯的URL列表
-#        - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2079
-#        # 初始化集群记号，建议一个集群内的所有节点都设置唯一的token
-#        - ETCD_INITIAL_CLUSTER_TOKEN=MyEtcd
-#        # 列出这个成员的客户端URL，通告给集群中的其他成员
-#        - ETCD_ADVERTISE_CLIENT_URLS=http://etcd3:2379
-#        # 集群配置，格式是ETCD_NAME=ETCD_INITIAL_ADVERTISE_PEER_URLS
-#        - ETCD_INITIAL_CLUSTER=etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
-#        # 初始化集群状态，这里写 new 就行
-#        - ETCD_INITIAL_CLUSTER_STATE=new
-#      volumes:
-#        - ./data/etcd3:/bitnami/etcd
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.0-arm64
+
+    container_name: etcd
+    command: >
+      etcd
+      --name etcd-node
+      --listen-client-urls http://0.0.0.0:2379
+      --advertise-client-urls http://0.0.0.0:2379
+    ports:
+      - "2379:2379"
+      - "2380:2380"

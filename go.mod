@@ -12,6 +12,8 @@ require (
 	github.com/gorilla/websocket v1.5.1
 	github.com/redis/go-redis/v9 v9.4.0
 	github.com/spf13/viper v1.18.2
+	go.etcd.io/etcd/api/v3 v3.5.12
+	go.etcd.io/etcd/client/v3 v3.5.12
 	go.uber.org/zap v1.26.0
 	google.golang.org/grpc v1.60.1
 	google.golang.org/protobuf v1.31.0
@@ -67,9 +69,7 @@ require (
 	github.com/tjfoc/gmsm v1.3.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
-	go.etcd.io/etcd/api/v3 v3.5.12 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.12 // indirect
-	go.etcd.io/etcd/client/v3 v3.5.12 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect

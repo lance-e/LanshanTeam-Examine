@@ -33,9 +33,9 @@
 
 web framework:gin
 
-rpc framework:grp
+rpc framework:grpc
 
-crelational database:mysql
+relational database:mysql
 
 none-relational database:redis
 
