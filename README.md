@@ -49,5 +49,112 @@ logger:zap
 
 ### structure
 
-
 ![structures.png](assets/structures.png)
+
+~~~bash
+LanshanTeam-Examine
+├── LICENSE
+├── README.md
+├── assets
+│   └── structures.png
+├── caller
+│   ├── api
+│   │   ├── middleware
+│   │   │   ├── cors.go
+│   │   │   └── jwt.go
+│   │   └── router
+│   │       └── route.go
+│   ├── config
+│   │   └── config.yaml
+│   ├── handle
+│   │   ├── addFriend.go
+│   │   ├── game.go
+│   │   ├── history.go
+│   │   ├── homepage.go
+│   │   ├── login.go
+│   │   ├── rank.go
+│   │   ├── register.go
+│   │   ├── thirdPart.go
+│   │   └── verify.go
+│   ├── main.go
+│   ├── model
+│   │   └── model.go
+│   ├── pkg
+│   │   ├── consts
+│   │   │   └── code.go
+│   │   └── utils
+│   │       └── logger.go
+│   ├── rpc
+│   │   ├── discovery
+│   │   │   └── discovery.go
+│   │   ├── gameModule
+│   │   │   ├── game.go
+│   │   │   └── pb
+│   │   │       ├── game.pb.go
+│   │   │       ├── game.proto
+│   │   │       └── game_grpc.pb.go
+│   │   └── userModule
+│   │       ├── pb
+│   │       │   ├── user.pb.go
+│   │       │   ├── user.proto
+│   │       │   └── user_grpc.pb.go
+│   │       └── user.go
+│   └── ws
+│       └── serve.go
+├── docker-compose.yaml
+├── go.mod
+├── go.sum
+├── gobang-client
+│   └── main.go
+└── server
+    ├── game
+    │   ├── config
+    │   │   └── gameConfig.yaml
+    │   ├── dao
+    │   │   ├── Init
+    │   │   │   └── init.go
+    │   │   ├── cathe
+    │   │   │   └── model.go
+    │   │   └── db
+    │   │       ├── migrate.go
+    │   │       └── model.go
+    │   ├── handle
+    │   │   └── handle.go
+    │   ├── main.go
+    │   ├── pb
+    │   │   ├── game.pb.go
+    │   │   ├── game.proto
+    │   │   └── game_grpc.pb.go
+    │   ├── serveRegister
+    │   │   └── register.go
+    │   └── utils
+    │       └── logger.go
+    └── user
+        ├── config
+        │   └── userConfig.yaml
+        ├── dao
+        │   ├── Init
+        │   │   └── init.go
+        │   ├── cathe
+        │   │   └── models.go
+        │   └── db
+        │       ├── migrate.go
+        │       └── models.go
+        ├── handle
+        │   ├── friendShip.go
+        │   ├── homepage.go
+        │   ├── registerAndLogin.go
+        │   └── scoreAndRank.go
+        ├── main.go
+        ├── pb
+        │   ├── user.pb.go
+        │   ├── user.proto
+        │   └── user_grpc.pb.go
+        ├── pkg
+        │   └── utils
+        │       ├── bcrypt.go
+        │       └── logger.go
+        └── serveRegister
+            └── register.go
+
+~~~
